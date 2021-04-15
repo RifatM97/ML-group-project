@@ -43,6 +43,7 @@ def extractTitles(df):
 
 
 def main():
+    """This section is for testing the preprocessing, will be run if you run this file only"""
     pd.set_option('display.max_columns', None)
 
     train = import2df('train.csv')
