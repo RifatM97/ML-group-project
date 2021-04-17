@@ -25,6 +25,44 @@ def fillagewithmean(df):
     """Replace missing age values with the average"""
     df['Age'] = df['Age'].fillna(value=df['Age'].mean())
 
+#Need to include link to this function in reference
+def fill_age(df):
+    """Replace missing age values with the median of the PClass and SibSP"""
+    df_med=df.groupby(["Pclass","SibSp"]).median()
+    for x in range(len(df)):
+        if df["Pclass"][x]==1:
+            if df["SibSp"][x]==0:
+                return df_med.loc[1,0]["Age"]
+            elif df["SibSp"][x]==1:
+                return df_med.loc[1,1]["Age"]
+            elif df["SibSp"][x]==2:
+                return df_med.loc[1,2]["Age"]
+            elif df["SibSp"][x]==3:
+                return df_med.loc[1,3]["Age"]
+        elif df["Pclass"][x]==2:
+            if df["SibSp"][x]==0:
+                return df_med.loc[2,0]["Age"]
+            elif df["SibSp"][x]==1:
+                return df_med.loc[2,1]["Age"]
+            elif df["SibSp"][x]==2:
+                return df_med.loc[2,2]["Age"]
+            elif df["SibSp"][x]==3:
+                return df_med.loc[2,3]["Age"]
+        elif df["Pclass"][x]==3:
+            if df["SibSp"][x]==0:
+                return df_med.loc[3,0]["Age"]
+            elif df["SibSp"][x]==1:
+                return df_med.loc[3,1]["Age"]
+            elif df["SibSp"][x]==2:
+                return df_med.loc[3,2]["Age"]
+            elif df["SibSp"][x]==3:
+                return df_med.loc[3,3]["Age"]
+            elif df["SibSp"][x]==4:
+                return df_med.loc[3,4]["Age"]
+            elif df["SibSp"][x]==5:
+                return df_med.loc[3,5]["Age"]
+            elif df["SibSp"][x]==8:
+                return df_med.loc[3]["Age"].median() 
 
 def fillembarked3(df):
     df['Embarked'] = df['Embarked'].fillna(value='S')  ## filling with the most common

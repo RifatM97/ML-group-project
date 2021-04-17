@@ -10,7 +10,8 @@ import methods
 
 def preprocessing(df):
     prep.sex2binary(df)
-    prep.fillagewithmean(df)
+    #prep.fillagewithmean(df)
+    prep.fill_age(df)
     prep.fillembarked3(df)
     df = prep.extractTitles(df)
     return prep.convert2onehot(df, 'Sex', 'Embarked', 'Title')
