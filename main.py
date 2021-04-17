@@ -4,6 +4,7 @@ import matplotlib.pyplot as plt
 from sklearn.model_selection import train_test_split
 
 import preprocessing as prep
+import testing as test
 import methods
 
 
@@ -26,6 +27,7 @@ def main():
     # split 80:20 into training data
     x = alldata.drop('Survived', axis=1)
     y = alldata["Survived"]
+    #TODO use different method to split data
     x_train, x_test, y_train, y_test = train_test_split(x, y, test_size=0.20, random_state=10)
 
     # TODO everyone can run their models here

@@ -46,18 +46,16 @@ def main():
     """This section is for testing the preprocessing, will be run if you run this file only"""
     pd.set_option('display.max_columns', None)
 
-    train = import2df('train.csv')
+    train = import2df('data/train.csv')
     print(train.to_string())
+    print(train.isna().sum())
 
     sex2binary(train)
     fillagewithmean(train)
     fillembarked3(train)
-    extractTitles(train)
+    train = extractTitles(train)
     print(train)
-    convert2onehot(train, 'Sex', 'Embarked', 'Title')
-
-    print(train.isna().sum())
-
+    train = convert2onehot(train, 'Sex', 'Embarked', 'Title')
     print(train)
 
 
