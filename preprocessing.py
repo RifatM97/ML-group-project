@@ -26,9 +26,8 @@ def fillagewithmean(df):
     df['Age'] = df['Age'].fillna(value=df['Age'].mean())
 
 #Need to include link to this function in reference
-def fill_age(df):
+def prep_fill_na_age(df, df_med):
     """Replace missing age values with the median of the PClass and SibSP"""
-    df_med=df.groupby(["Pclass","SibSp"]).median()
     for x in range(len(df)):
         if df["Pclass"][x]==1:
             if df["SibSp"][x]==0:
@@ -64,8 +63,13 @@ def fill_age(df):
             elif df["SibSp"][x]==8:
                 return df_med.loc[3]["Age"].median() 
 
+def fill_na_age(df):
+    df_med=df.groupby(["Pclass","SibSp"]).median()
+    df["Age"]=df["Age"].fillna(prep_fill_na_age(df, df_med))
+
 def fillembarked3(df):
-    df['Embarked'] = df['Embarked'].fillna(value='S')  ## filling with the most common
+    ## filling with the most common
+    df['Embarked'] = df['Embarked'].fillna(value='S')  
 
 
 def extractTitles(df):

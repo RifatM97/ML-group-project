@@ -1,5 +1,6 @@
 import pandas as pd
 import matplotlib.pyplot as plt
+import numpy as np
 
 from sklearn.model_selection import train_test_split
 
@@ -11,11 +12,13 @@ import methods
 def preprocessing(df):
     prep.sex2binary(df)
     #prep.fillagewithmean(df)
-    prep.fill_age(df)
+    prep.fill_na_age(df)
     prep.fillembarked3(df)
     df = prep.extractTitles(df)
+    #remove outlier for Fare
+    df = df[df.Fare != max(df.Fare)]
     return prep.convert2onehot(df, 'Sex', 'Embarked', 'Title')
-
+    #return df.drop(['Sex', 'Embarked', 'Title'], axis=1)
 
 def main():
     # set cmd panda view and import data
@@ -36,9 +39,13 @@ def main():
     # run a random forest model with 100 n_estimators
     forest_prediction = methods.randomForest(x_train, y_train, x_test, n_estimators=100)
 
+    #fisher's LDA
+    #methods.fisher_linear_discriminant_projection(x_train, y_train)
+    #plt.show()
+
     # TODO score (don't submit this we need to do our own evaluations) add evaluation techniques here
-    from sklearn.metrics import accuracy_score
-    print(accuracy_score(y_test, forest_prediction))
+    #from sklearn.metrics import accuracy_score
+    #print(accuracy_score(y_test, forest_prediction))
 
 
 
