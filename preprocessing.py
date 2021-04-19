@@ -1,5 +1,6 @@
 import pandas as pd
-
+import random
+import numpy as np
 
 def import2df(file):
     return pd.read_csv(file, usecols=['Survived', 'Pclass', 'Name',
@@ -83,6 +84,44 @@ def extractTitles(df):
     return df.drop(['Name'], axis=1)
 
 
+def partition(x, y, train_portion=None):
+    """ Partitions the data into train-validatin-test.
+    Inputs  - x : the titanic dataset
+            - y : the survived columns
+    Outputs - The data splitted in 3 different parts
+    """
+    # Divide datasets
+    random.seed(40)  # same seed for consistent workflow
+
+    # Decide training portion
+    if train_portion is None:
+        train_portion = 0.8
+    else:
+        train_portion = train_portion
+
+    valid_portion = 0.1
+    test_portion = 0.1
+
+    # Converting the df to numpy arrays
+    y = y.to_numpy()
+    x = x.to_numpy()
+
+    ### randomise the data set
+    idx = [i for i in range(len(x))]
+    random.shuffle(idx)
+    train_idx, valid_idx, test_idx = np.split(idx, [int(train_portion * len(x)),
+                                                    int((train_portion + test_portion) * len(x))])
+
+    X_train = x[train_idx]
+    Y_train = y[train_idx]
+
+    X_valid = x[valid_idx]
+    Y_valid = y[valid_idx]
+
+    X_test = x[test_idx]
+    Y_test = y[test_idx]
+
+    return X_train, Y_train, X_valid, Y_valid, X_test, Y_test
 
 def main():
     """This section is for testing the preprocessing, will be run if you run this file only"""
