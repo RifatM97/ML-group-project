@@ -42,7 +42,5 @@ def KNN_prob(x_train, y_train, test, K):
 
 #TODO enter your methods here 
 
-# added change
-
 
 
