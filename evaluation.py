@@ -1,4 +1,6 @@
 import random
+from statistics import stdev
+from statistics import mean
 
 # Partitioning the input data into Train-Validation-Testing sets
 def partition(x,y,train_portion = None):
@@ -232,6 +234,30 @@ def kfoldCV(dataset, f=5, k=5, n_estimators=100, model="logistic"):
         result.append(acc/len(test))
         
     return result
+
+# Accuracy vs Folds
+def accuracy_v_fold(model="knn"):
+    """Function takes a chosen model to plot an accuracy vs number of folds plot. The accuracies are
+    the average values for the all the accuracies from each fold."""
+
+    cross_vals = []
+    folds = np.arange(2,20)
+    for i in folds:
+        
+        if model == "logistic":
+            cv_val = kfoldCV(x, f=i, k=5, model="logistic")
+            cross_vals.append(mean(cv_val))
+        elif model == "knn":
+            cv_val = kfoldCV(x, f=i, k=5, model="knn")
+            cross_vals.append(mean(cv_val))
+        elif model == "forest":
+            cv_val = kfoldCV(x, f=i, k=5, model="forest")
+            cross_vals.append(mean(cv_val))
+            
+    # plotting routine
+    plt.plot(folds, cross_vals)
+    plt.xlabel("Folds")
+    plt.ylabel("Accuracy")
 
 # KNN threshod (HAVE TO MOVE THIS SOMEWHERE ELSE)
 def KNN_threshold(x, threshold=0.5):
