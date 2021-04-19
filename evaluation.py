@@ -134,3 +134,131 @@ def expected_loss(targets, predicts, lossmtx):
     N = len(targets)
     error = (class0loss + class1loss)/N
     return error
+
+# Cross entropy loss evaluation function (NEEDS TO BE REVIEWED AS IT GIVES NAN ERROR)
+def cross_entropy_error(targets, predict_probs):
+    """
+    Evaluate how closely predicted values match the true
+    values in a cross-entropy sense.
+    ----------
+    targets - The actual survival values
+    predicts - the predictions of the survival
+    lossmtx - confusion matrix
+
+    Returns
+    -------
+    error - The cross-entropy error between true and predicted target
+    """
+    # flatted
+    targets = np.array(targets).flatten()
+    predict_probs = np.array(predict_probs[:,1]).flatten()
+    N = len(targets)
+    error = - np.sum(targets*np.log(predict_probs) + (1-targets)*np.log(1-predict_probs))/N
+    return error
+
+### misclassification error function
+
+def misclassification_error(targets, predicts):
+    """Function finds the minimum-misclassification error between true and predicted target. 
+    It cant be considered as 1 minus the accuracy. """
+
+    # flatten both arrays and ensure they are array objects
+    targets = np.array(targets).flatten()
+    predicts = np.array(predicts).flatten()
+    N = targets.size
+    error = 1 - np.sum(targets == predicts)/N
+    return error
+
+### K-fold cross validation function
+
+def cross_validation_split(dataset, folds):
+    """Function splits the data in chosen folds. The output is splitted data"""
+
+        dataset_split = []
+        df_copy = dataset
+        fold_size = int(df_copy.shape[0] / folds)
+        
+        # for loop to save each fold
+        for i in range(folds):
+            fold = []
+            # while loop to add elements to the folds
+            while len(fold) < fold_size:
+                # select a random element
+                r = random.randrange(df_copy.shape[0])
+                # determine the index of this element 
+                index = df_copy.index[r]
+                # save the randomly selected line 
+                fold.append(df_copy.loc[index].values.tolist())
+                # delete the randomly selected line from
+                # dataframe not to select again
+                df_copy = df_copy.drop(index)
+            # save the fold     
+            dataset_split.append(np.asarray(fold))
+            
+        return dataset_split 
+    
+def kfoldCV(dataset, f=5, k=5, n_estimators=100, model="logistic"):
+    """Function runs chosen model into each fold and tests the model on different 
+    sections. Inputs is the chosen dataset, number of folds, model name and model parameters.
+    The output is an array of accuracy values for each fold."""
+
+    data=cross_validation_split(dataset,f)
+    result=[]
+    # determine training and test sets 
+    for i in range(f):
+        r = list(range(f))
+        r.pop(i)
+        for j in r :
+            if j == r[0]:
+                cv = data[j]
+            else:    
+                cv=np.concatenate((cv,data[j]), axis=0)
+        
+        # apply the selected model
+        # default is logistic regression
+        if model == "logistic":
+            # default: alpha=0.01, num_iter=100000
+            
+            ### THIS IS ABID'S FUNCTION (CHANGE ACCORDING TO THE DEFINITON)
+            test = logistic.fit(cv[:,0:4],cv[:,4],data[i][:,0:4])
+            #test = c['Y_prediction_test']
+        elif model == "knn":
+            test = KNN_predict(cv[:,0:4],cv[:,4],data[i][:,0:4],k)
+        elif model == "forest":
+            test = randomForest(cv[:,0:4],cv[:,4],data[i][:,0:4],n_estimators)
+            
+        # calculate accuracy    
+        acc=(test == data[i][:,4]).sum()
+        result.append(acc/len(test))
+        
+    return result
+
+# KNN threshod (HAVE TO MOVE THIS SOMEWHERE ELSE)
+def KNN_threshold(x, threshold=0.5):
+    """Function uses threshold input for model prediction"""
+
+    y_probs = KNN_prob(X_train, Y_train, x, K)
+    predictions = y_probs >= threshold
+    return np.multiply(predictions[:,1],1)
+
+# Define decision thresholds between 0-1
+thresholds = np.linspace(0,1, 400)
+
+# Calculate the recall and false positive rate for threshold options
+def get_roc(x, y):
+    tpr = []
+    fpr = []
+    for threshold in thresholds:
+        Y_predict = KNN_threshold(x, threshold=threshold)
+        cm = confusion_matrix(Y_predict, y)
+        tpr.append(recall(cm))
+        fpr.append(false_positive_ratio(cm))
+    return fpr, tpr
+  
+# Cutoff point of the best threshold by maximising the true positive rate and minimising the false positive rate
+def get_cutoff(fpr, tpr):
+    optimal_idx = np.argmax(np.array(tpr) - np.array(fpr))
+    optimal_threshold = thresholds[optimal_idx]
+    return optimal_idx, optimal_threshold
+
+
