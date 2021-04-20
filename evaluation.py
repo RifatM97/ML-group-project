@@ -141,28 +141,28 @@ def misclassification_error(targets, predicts):
 def cross_validation_split(dataset, folds):
     """Function splits the data in chosen folds. The output is splitted data"""
 
-        dataset_split = []
-        df_copy = dataset
-        fold_size = int(df_copy.shape[0] / folds)
+    dataset_split = []
+    df_copy = dataset
+    fold_size = int(df_copy.shape[0] / folds)
+    
+    # for loop to save each fold
+    for i in range(folds):
+        fold = []
+        # while loop to add elements to the folds
+        while len(fold) < fold_size:
+            # select a random element
+            r = random.randrange(df_copy.shape[0])
+            # determine the index of this element 
+            index = df_copy.index[r]
+            # save the randomly selected line 
+            fold.append(df_copy.loc[index].values.tolist())
+            # delete the randomly selected line from
+            # dataframe not to select again
+            df_copy = df_copy.drop(index)
+        # save the fold     
+        dataset_split.append(np.asarray(fold))
         
-        # for loop to save each fold
-        for i in range(folds):
-            fold = []
-            # while loop to add elements to the folds
-            while len(fold) < fold_size:
-                # select a random element
-                r = random.randrange(df_copy.shape[0])
-                # determine the index of this element 
-                index = df_copy.index[r]
-                # save the randomly selected line 
-                fold.append(df_copy.loc[index].values.tolist())
-                # delete the randomly selected line from
-                # dataframe not to select again
-                df_copy = df_copy.drop(index)
-            # save the fold     
-            dataset_split.append(np.asarray(fold))
-            
-        return dataset_split 
+    return dataset_split 
     
 def kfoldCV(dataset, f=5, k=5, n_estimators=100, model="logistic"):
     """Function runs chosen model into each fold and tests the model on different 

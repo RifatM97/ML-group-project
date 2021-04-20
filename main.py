@@ -5,7 +5,7 @@ import numpy as np
 from sklearn.model_selection import train_test_split
 
 import preprocessing as prep
-#import testing as test
+import evaluation as eval
 import methods
 
 
@@ -32,14 +32,14 @@ def main():
     x = alldata.drop('Survived', axis=1)
     y = alldata["Survived"]
     #TODO use different method to split data
-    # x_train, x_test, x_valid, y_valid, y_train, y_test = prep.partition(x, y)
-    x_train, x_test, y_train, y_test = train_test_split(x, y, test_size=0.20, random_state=10)
+    x_train, x_test, x_valid, y_valid, y_train, y_test = prep.partition(x, y)
+    #x_train, x_test, y_train, y_test = train_test_split(x, y, test_size=0.20, random_state=10)
     print(type(x_train))
 
     # TODO everyone can run their models here
 
     # run a random forest model with 100 n_estimators
-    #methods.KNN_predict(x_train, y_train, x_test, 5)
+    knn_prediction = methods.KNN_predict(x_train, y_train, x_test, 5)
     # forest_prediction = methods.randomForest(x_train, y_train, x_test, n_estimators=100)
 
     #fisher's LDA
