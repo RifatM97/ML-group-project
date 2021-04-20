@@ -43,7 +43,6 @@ def KNN_prob(x_train, y_train, test, K):
     return prediction
 
 
-#TODO enter your methods here 
 def fishers_LDA(x_train, y_train, x_test, y_test):    
     data_train = pd.merge(x_train, y_train, left_index=True, right_index=True)
     data_test = pd.merge(x_test, y_test, left_index=True, right_index=True)
@@ -211,5 +210,62 @@ def plot_class_histograms(
     print("class_ids = %r" % (class_ids,))
     return ax
 
+# Creating a classifier for Logistic Regression
+# This method uses stochastic gradient descent
+class LogisticRegression():
+    
+    # Constructor used to initialize the objects in the class
+    # Where itr = number of iterations for convergance
+    # learnrate = learning rate of gradient descent
+    # bias indicates if bias should be accounted for
+    def __init__(LR, learnrate=0.01, itr =100000, bias=True):
+
+        
+    # Equating the variables defined in this function to that of LR
+        LR.learnrate = learnrate
+        LR.itr = itr
+        LR.bias = bias
+        LR.weights = None 
+       
+    # Logistic sigmoid equation
+    @staticmethod
+    def __sigmoid(a):
+        return 1 / (1 + np.exp(-a))
+
+    # Intercept array
+    @staticmethod
+    def __intercepts(X):
+        intercept = np.ones((X.shape[0], 1))
+        return np.concatenate((intercept, X), axis=1)
+    
+
+    # Weighting the training data  
+    def weighting(LR, X, y, test, lim = 0.5):
+        if LR.bias:
+            X = LR.__intercepts(X)
+        
+        LR.weights = np.zeros(X.shape[1])
+
+        #Calculating across all iterations
+        for i in range(LR.itr):
+            
+            # Gradient Descent equation
+            a = np.dot(X, LR.weights)
+            h = LR.__sigmoid(a)
+            graddes = np.dot(X.T, (h - y)) / y.size
+            LR.weights -= LR.learnrate * graddes
+
+        # Predicts the membership using the probabilities
+        prediction = LR.prob(test) >= lim
+        return np.multiply(prediction, 1) 
+    
+    
+    # Determines the probability of a class membership
+    def prob(LR, X):
+        if LR.bias:
+            X = LR.__intercepts(X)
+            a = np.dot(X, LR.weights)
+    
+        return LR.__sigmoid(a)
 
 
