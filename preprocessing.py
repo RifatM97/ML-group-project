@@ -85,7 +85,7 @@ def extractTitles(df):
 
 
 def partition(x, y, train_portion=None):
-    """ Partitions the data into train-validatin-test.
+    """ Partitions the data into train-validation-test.
     Inputs  - x : the titanic dataset
             - y : the survived columns
     Outputs - The data splitted in 3 different parts

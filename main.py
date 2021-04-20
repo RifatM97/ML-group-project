@@ -39,12 +39,12 @@ def main():
     # TODO everyone can run their models here
 
     # run a random forest model with 100 n_estimators
-    methods.KNN_predict(x_train, y_train, x_test, 5)
+    #methods.KNN_predict(x_train, y_train, x_test, 5)
     # forest_prediction = methods.randomForest(x_train, y_train, x_test, n_estimators=100)
 
     #fisher's LDA
-    methods.fishers_LDA(x_train, y_train)
-    plt.show()
+    methods.fishers_LDA(x_train, y_train, x_test, y_test)
+    #plt.show()
 
     # TODO score (don't submit this we need to do our own evaluations) add evaluation techniques here
     #from sklearn.metrics import accuracy_score

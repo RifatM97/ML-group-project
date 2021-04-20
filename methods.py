@@ -44,41 +44,44 @@ def KNN_prob(x_train, y_train, test, K):
 
 
 #TODO enter your methods here 
-def fishers_LDA(x_train, y_train):    
-    data = pd.merge(x_train, y_train, left_index=True, right_index=True)
+def fishers_LDA(x_train, y_train, x_test, y_test):    
+    data_train = pd.merge(x_train, y_train, left_index=True, right_index=True)
+    data_test = pd.merge(x_test, y_test, left_index=True, right_index=True)
     target_col="Survived"
-    # read in the data
-    dataframe = data
-    #print the names of all columns to the console
-    print("dataframe.columns = %r" % (dataframe.columns,) )
-    #obtain the number of rows in the data
-    N = dataframe.shape[0]
-    input_cols = list(dataframe.columns)
+    input_cols = list(data_train.columns)
     # target data should not be part of the inputs
     input_cols.remove("Survived")
-    #print the names of the columns that will be used in the model to the console
-    print("input_cols = %r" % (input_cols,))
     #we assume there are only 2 classes in the target variable
      # get the class values as a pandas Series object
-    class_values = dataframe["Survived"]
+    class_values = data_train["Survived"]
     classes = class_values.unique()
-    #print the unique classes to the console
-    print("classes = %r" % (classes,))
+    #obtain the number of rows in the training data
+    N = data_train.shape[0]
     # In case the classes are not integers, this is a simple encoding from class to integer.
-    targets = np.empty(N)
+    targets_train = np.empty(N)
     for class_id, class_name in enumerate(classes):
         is_class = (class_values == class_name)
-        targets[is_class] = class_id
+        targets_train[is_class] = class_id
+    #do the same to get targets_test
+    class_values_test = data_test["Survived"]
+    classes_test = class_values_test.unique()
+    #obtain the number of rows in the training data
+    N = data_test.shape[0]
+    # In case the classes are not integers, this is a simple encoding from class to integer.
+    targets_test = np.empty(N)
+    for class_id, class_name in enumerate(classes_test):
+        is_class = (class_values_test == class_name)
+        targets_test[is_class] = class_id
     # We assume all our inputs are real numbers (or can be
     # represented as such), so we'll convert all these columns to a 2d numpy
     # array object
-    inputs = dataframe[input_cols].values
-        #classes=classes
-    # get the shape of the data (N = number of rows, D = number of columns)
-    N, D = inputs.shape
+    inputs_train = data_train[input_cols].values
+    inputs_test = data_test[input_cols].values
+    # get the shape of the training data (N = number of rows, D = number of columns)
+    N, D = inputs_train.shape
     # separate by each class
-    inputs0 = inputs[targets==0]
-    inputs1 = inputs[targets==1]
+    inputs0 = inputs_train[targets_train==0]
+    inputs1 = inputs_train[targets_train==1]
     # find maximum likelihood approximations to the two data-sets
     m0, S_0 = max_lik_mv_gaussian(inputs0)
     m1, S_1 = max_lik_mv_gaussian(inputs1)
@@ -97,14 +100,33 @@ def fishers_LDA(x_train, y_train):
     projected_m1 = np.mean(project_data(inputs1, weights))
     if projected_m0 > projected_m1:
         weights = -weights
-    #apply the weights to the data
-    projected_inputs = project_data(inputs, weights)
-    ax = plot_class_histograms(projected_inputs, targets)
+    #apply the weights to the training data
+    projected_inputs_train = project_data(inputs_train, weights)
+    ax_train = plot_class_histograms(projected_inputs_train, targets_train)
     # label x axis
-    ax.set_xlabel(r"$\mathbf{w}^T\mathbf{x}$")
-    ax.set_title("Projected Data: %s" % "fisher")
+    ax_train.set_xlabel(r"$\mathbf{w}^T\mathbf{x}$")
+    ax_train.set_title("Projected Data: %s" % "fisher")
     if not classes is None:
-        ax.legend(classes)
+        ax_train.legend(classes)
+    #apply the weights to the test data
+    projected_inputs_test = project_data(inputs_test, weights)
+    #create empty vector for class predictions
+    N = data_test.shape[0]
+    y_predict = np.empty(N)
+    #Calculate the bias
+    R4 = np.dot((m0+m1).reshape(15,1).T, np.linalg.inv(S_W))
+    w0 = -(1/2)*np.dot(R4, (m0-m1).reshape(15,1))
+    #Create prediction for test data
+    test_num = x_test.shape[0]
+    for i in range(test_num):
+      R = np.dot(weights.T,inputs_test[i].reshape(15,1))+w0
+      if R <= 0:
+         y_predict[i] = 1
+      else:
+         y_predict[i] = 0
+    print(y_predict)
+    return y_predict
+
 
 def project_data(data, weights):
     """
