@@ -59,7 +59,7 @@ def visual():
         plt.figure(figsize=(10,8))
         sns.countplot(x = i, data = train, hue = "Survived")
     
-    alldata = preprocessing(alldata)
+    alldata = prep(train)
     plt.figure(figsize=(10,8))
     sns.heatmap(alldata.corr(), annot=True)
     plt.show()
