@@ -32,23 +32,23 @@ def main():
     x = alldata.drop('Survived', axis=1)
     y = alldata["Survived"]
     #TODO use different method to split data
-    x_train, x_test, x_valid, y_valid, y_train, y_test = prep.partition(x, y)
-    #x_train, x_test, y_train, y_test = train_test_split(x, y, test_size=0.20, random_state=10)
-    print(type(x_train))
+    X_train, Y_train, X_valid, Y_valid, X_test, Y_test = prep.partition(x, y)
+    # x_train, x_test, y_train, y_test = train_test_split(x, y, test_size=0.20, random_state=10)
+
 
     # TODO everyone can run their models here
 
     # run a random forest model with 100 n_estimators
-    knn_prediction = methods.KNN_predict(x_train, y_train, x_test, 5)
-    # forest_prediction = methods.randomForest(x_train, y_train, x_test, n_estimators=100)
+    # knn_prediction = methods.KNN_predict(x_train, y_train, x_test, 5)
+    forest_prediction = methods.randomForest(X_train, Y_train, X_test, n_estimators=100)
 
     #fisher's LDA
-    methods.fishers_LDA(x_train, y_train, x_test, y_test)
-    #plt.show()
+    fisher_predict = methods.fishers_LDA(X_train, Y_train, X_test, Y_test)
+    plt.show()
 
     # TODO score (don't submit this we need to do our own evaluations) add evaluation techniques here
-    #from sklearn.metrics import accuracy_score
-    #print(accuracy_score(y_test, forest_prediction))
+    from sklearn.metrics import accuracy_score
+    print(accuracy_score(Y_test, forest_prediction))
 
 
 
