@@ -46,6 +46,21 @@ def main():
     methods.fishers_LDA(x_train, y_train, x_test, y_test)
     #plt.show()
 
+    #Logistic Regression
+
+# Fit the classifier on training data X_train, Y_train
+    import time
+    start_time = time.time()
+
+
+    methods.classifier = LogisticRegression()
+    predictions = methods.classifier.weighting(X_train, Y_train, X_test)
+
+
+    print("--- %s seconds ---" % (time.time() - start_time))
+
+
+
     # TODO score (don't submit this we need to do our own evaluations) add evaluation techniques here
     #from sklearn.metrics import accuracy_score
     #print(accuracy_score(y_test, forest_prediction))
