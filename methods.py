@@ -259,7 +259,6 @@ class LogisticRegression():
         prediction = LR.prob(test) >= lim
         return np.multiply(prediction, 1) 
     
-    
     # Determines the probability of a class membership
     def prob(LR, X):
         if LR.bias:
