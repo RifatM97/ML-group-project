@@ -3,6 +3,9 @@ from statistics import stdev
 from statistics import mean
 import numpy as np
 import methods
+import matplotlib.pyplot as plt
+import preprocessing as prep
+import methods
 
 # Partitioning the input data into Train-Validation-Testing sets
 
@@ -27,20 +30,20 @@ def confusion_matrix(Y_predict, Y) :
     return cm
 
 # Accuracy vs Training sample size
-def accuracy_v_sample(model="knn"):
+def accuracy_v_sample(x,y,model="knn"):
     """Function plots the accuracy against the sample size of different models. The inputs is the chosen 
     model. The output is the plot"""
     size = np.arange(0.1,0.9,0.1)
     accuracy_score = []
     for i in size:
-        X_train, Y_train, X_valid, Y_valid, X_test, Y_test=partition(x,y,train_portion=i)
+        X_train, Y_train, X_valid, Y_valid, X_test, Y_test=prep.partition(x,y,train_portion=i)
         
         if model == "knn":
-            y_predict = KNN_predict(X_train, Y_train, X_test, 5)
+            y_predict = methods.KNN_predict(X_train, Y_train, X_test, 5)
             accuracy_score.append(accuracy(y_predict,Y_test))
             
         elif model == "forest":
-            y_predict = randomForest(X_train, Y_train, X_test,100)
+            y_predict = methods.randomForest(X_train, Y_train, X_test,100)
             accuracy_score.append(accuracy(y_predict,Y_test))
             
         elif model == "logistic":
@@ -190,9 +193,9 @@ def kfoldCV(dataset, f=5, k=5, n_estimators=100, model="logistic"):
             test = logistic.fit(cv[:,0:4],cv[:,4],data[i][:,0:4])
             #test = c['Y_prediction_test']
         elif model == "knn":
-            test = KNN_predict(cv[:,0:4],cv[:,4],data[i][:,0:4],k)
+            test = methods.KNN_predictKNN_predict(cv[:,0:4],cv[:,4],data[i][:,0:4],k)
         elif model == "forest":
-            test = randomForest(cv[:,0:4],cv[:,4],data[i][:,0:4],n_estimators)
+            test = methods.KNN_predictrandomForest(cv[:,0:4],cv[:,4],data[i][:,0:4],n_estimators)
             
         # calculate accuracy    
         acc=(test == data[i][:,4]).sum()
@@ -201,7 +204,7 @@ def kfoldCV(dataset, f=5, k=5, n_estimators=100, model="logistic"):
     return result
 
 # Accuracy vs Folds
-def accuracy_v_fold(model="knn"):
+def accuracy_v_fold(x,model="knn"):
     """Function takes a chosen model to plot an accuracy vs number of folds plot. The accuracies are
     the average values for the all the accuracies from each fold."""
 
@@ -228,7 +231,7 @@ def accuracy_v_fold(model="knn"):
 def KNN_threshold(x, threshold=0.5):
     """Function uses threshold input for model prediction"""
 
-    y_probs = KNN_prob(X_train, Y_train, x, K)
+    y_probs = methods.KNN_prob(X_train, Y_train, x, K)
     predictions = y_probs >= threshold
     return np.multiply(predictions[:,1],1)
 

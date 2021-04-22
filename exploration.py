@@ -12,33 +12,34 @@ test = pd.read_csv(r"C:\Users\user\ML-group-project.git\ML-group-project\data\te
 print(test) # testing data
 
 # Concatenating to full data
-df = [train,test]
-titanic = pd.concat(df)
-print(titanic.info())
+def inspection():
+    df = [train,test]
+    titanic = pd.concat(df)
+    print(titanic.info())
 
-### Not using the testing set as it does not contain survival column
-### For supervised models we need to train models on survival column
-### Only training set will be explored
+    ### Not using the testing set as it does not contain survival column
+    ### For supervised models we need to train models on survival column
+    ### Only training set will be explored
 
-# Data types
-for column in train.columns.values:
-    print (column, "data type: ", type(train[column][1]))
+    # Data types
+    for column in train.columns.values:
+        print (column, "data type: ", type(train[column][1]))
 
-# Identifying missing values
-for column in train.columns.values:
-    count_nan = train[column].isna().sum()
-    print (column, "total missing: ", count_nan)
+    # Identifying missing values
+    for column in train.columns.values:
+        count_nan = train[column].isna().sum()
+        print (column, "total missing: ", count_nan)
 
-### Cabin data is full of gaps, Age needs to be filled.
+    ### Cabin data is full of gaps, Age needs to be filled.
 
-# Inspecting numerical data
-print(train.describe())
-# Inspecting non-numerical data
-print(train.describe(include=['O']))
+    # Inspecting numerical data
+    print(train.describe())
+    # Inspecting non-numerical data
+    print(train.describe(include=['O']))
 
-# Inspecting name column and titles
-train['Title'] = train.Name.str.extract(' ([A-Za-z]+)\.', expand=False)
-print(pd.crosstab(train['Title'], train['Sex']))
+    # Inspecting name column and titles
+    train['Title'] = train.Name.str.extract(' ([A-Za-z]+)\.', expand=False)
+    print(pd.crosstab(train['Title'], train['Sex']))
 
 # Visualizing data
 
@@ -59,9 +60,14 @@ def visual():
         plt.figure(figsize=(10,8))
         sns.countplot(x = i, data = train, hue = "Survived")
     
-    alldata = prep(train)
-    plt.figure(figsize=(10,8))
-    sns.heatmap(alldata.corr(), annot=True)
+    #alldata = prep(train)
+    # plt.figure(figsize=(10,8))
+    # sns.heatmap(alldata.corr(), annot=True)
+
+    # visulising relationship between features after prepocessing
+
     plt.show()
 
 visual()
+
+# print(prep(train))
