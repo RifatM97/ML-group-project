@@ -218,14 +218,14 @@ class LogisticRegression():
     # Where itr = number of iterations for convergance
     # learnrate = learning rate of gradient descent
     # bias indicates if bias should be accounted for
-    def __init__(LR, learnrate=0.01, itr =100000, bias=True):
+    def __init__(self, learnrate=0.01, itr =100000, bias=True):
 
         
     # Equating the variables defined in this function to that of LR
-        LR.learnrate = learnrate
-        LR.itr = itr
-        LR.bias = bias
-        LR.weights = None 
+        self.learnrate = learnrate
+        self.itr = itr
+        self.bias = bias
+        self.weights = None 
        
     # Logistic sigmoid equation
     @staticmethod
@@ -240,31 +240,30 @@ class LogisticRegression():
     
 
     # Weighting the training data  
-    def weighting(LR, X, y, test, lim = 0.5):
-        if LR.bias:
-            X = LR.__intercepts(X)
+    def weighting(self, X, y, test, threshold = 0.5):
+        if self.bias:
+            X = self.__intercepts(X)
         
-        LR.weights = np.zeros(X.shape[1])
+        self.weights = np.zeros(X.shape[1])
 
         #Calculating across all iterations
-        for i in range(LR.itr):
+        for i in range(self.itr):
             
             # Gradient Descent equation
-            a = np.dot(X, LR.weights)
-            h = LR.__sigmoid(a)
+            a = np.dot(X, self.weights)
+            h = self.__sigmoid(a)
             graddes = np.dot(X.T, (h - y)) / y.size
-            LR.weights -= LR.learnrate * graddes
+            self.weights -= self.learnrate * graddes
 
         # Predicts the membership using the probabilities
-        prediction = LR.prob(test) >= lim
+        prediction = self.prob(test) >= threshold
         return np.multiply(prediction, 1) 
     
     # Determines the probability of a class membership
-    def prob(LR, X):
-        if LR.bias:
-            X = LR.__intercepts(X)
-            a = np.dot(X, LR.weights)
+    def prob(self, X):
+        if self.bias:
+            X = self.__intercepts(X)
+            a = np.dot(X, self.weights)
     
-        return LR.__sigmoid(a)
-
+        return self.__sigmoid(a)
 

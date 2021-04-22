@@ -60,14 +60,16 @@ def visual():
         plt.figure(figsize=(10,8))
         sns.countplot(x = i, data = train, hue = "Survived")
     
-    #alldata = prep(train)
+    # visulising relationship between features after prepocessing
+
+    # alldata = prep(train)
     # plt.figure(figsize=(10,8))
     # sns.heatmap(alldata.corr(), annot=True)
 
-    # visulising relationship between features after prepocessing
-
     plt.show()
 
+# printing the function above
+
+inspection()
 visual()
 
-# print(prep(train))
