@@ -152,4 +152,62 @@ def plot_class_histograms(
      #   ax.hist(class_inputs, bins=bins, color=colors[i], alpha=0.6)
         ax.hist(class_inputs, bins=bins, alpha=0.6)
     print("class_ids = %r" % (class_ids,))
-    return ax    
+    return ax
+
+# Creating a classifier for Logistic Regression
+# This method uses stochastic gradient descent
+class LogisticRegression():
+    
+    # Constructor used to initialize the objects in the class
+    # Where itr = number of iterations for convergance
+    # learnrate = learning rate of gradient descent
+    # bias indicates if bias should be accounted for
+    def __init__(self, learnrate=0.01, itr =100000, bias=True):
+
+        
+    # Equating the variables defined in this function to that of LR
+        self.learnrate = learnrate
+        self.itr = itr
+        self.bias = bias
+        self.weights = None 
+       
+    # Logistic sigmoid equation
+    @staticmethod
+    def __sigmoid(a):
+        return 1 / (1 + np.exp(-a))
+
+    # Intercept array
+    @staticmethod
+    def __intercepts(X):
+        intercept = np.ones((X.shape[0], 1))
+        return np.concatenate((intercept, X), axis=1)
+    
+
+    # Weighting the training data  
+    def weighting(self, X, y, test, threshold = 0.5):
+        if self.bias:
+            X = self.__intercepts(X)
+        
+        self.weights = np.zeros(X.shape[1])
+
+        #Calculating across all iterations
+        for i in range(self.itr):
+            
+            # Gradient Descent equation
+            a = np.dot(X, self.weights)
+            h = self.__sigmoid(a)
+            graddes = np.dot(X.T, (h - y)) / y.size
+            self.weights -= self.learnrate * graddes
+
+        # Predicts the membership using the probabilities
+        prediction = self.prob(test) >= threshold
+        return np.multiply(prediction, 1) 
+    
+    # Determines the probability of a class membership
+    def prob(self, X):
+        if self.bias:
+            X = self.__intercepts(X)
+            a = np.dot(X, self.weights)
+    
+        return self.__sigmoid(a)
+

@@ -1,11 +1,12 @@
 import pandas as pd
 import matplotlib.pyplot as plt
 import numpy as np
+import seaborn as sns
 
 from sklearn.model_selection import train_test_split
 
 import preprocessing as prep
-#import testing as test
+import evaluation as eval
 import methods
 
 
@@ -21,9 +22,10 @@ def preprocessing(df):
     #return df.drop(['Sex', 'Embarked', 'Title'], axis=1)
 
 def main():
+
     # set cmd panda view and import data
     pd.set_option('display.max_columns', None)
-    alldata = prep.import2df('data/train.csv')
+    alldata = prep.import2df(r'C:\Users\user\ML-group-project.git\ML-group-project\data\train.csv')
 
     # fill in missing data and convert categories to one hot
     alldata = preprocessing(alldata)
@@ -31,28 +33,76 @@ def main():
     # split 80:20 into training data
     x = alldata.drop('Survived', axis=1)
     y = alldata["Survived"]
-    #TODO use different method to split data
-    # x_train, x_test, x_valid, y_valid, y_train, y_test = prep.partition(x, y)
-    x_train, x_test, y_train, y_test = train_test_split(x, y, test_size=0.20, random_state=10)
-    print(type(x_train))
+    X_train, Y_train, X_valid, Y_valid, X_test, Y_test = prep.partition(x, y)
 
     # TODO everyone can run their models here
 
-    # run a random forest model with 100 n_estimators
-    #methods.KNN_predict(x_train, y_train, x_test, 5)
-    # forest_prediction = methods.randomForest(x_train, y_train, x_test, n_estimators=100)
+    # Running the KNN model
+    knn_prediction = methods.KNN_predict(X_train, Y_train, X_test, 30)
+    print(knn_prediction)
+    print(eval.accuracy(knn_prediction,Y_test))
+    eval.accuracy_v_sample(x,y,model="knn")
+    print(eval.expected_loss(Y_test,knn_prediction,eval.confusion_matrix(knn_prediction,Y_test)))
+
+    # Run random forest model with 100 n_estimators
+    forest_prediction = methods.randomForest(X_train, Y_train, X_test, n_estimators=100)
+    print(forest_prediction)
+    print(eval.accuracy(forest_prediction,Y_test))
+    eval.accuracy_v_sample(x,y,model="forest")
+    print(eval.expected_loss(Y_test,forest_prediction,eval.confusion_matrix(forest_prediction,Y_test)))
+
+    # Run Logistic Regression model
+    logistic = methods.LogisticRegression()
+    logistic_prediction = logistic.weighting(X_train,Y_train, X_test)
+    print(logistic_prediction)
+    print(eval.accuracy(logistic_prediction,Y_test))
+    eval.accuracy_v_sample(x,y,model="logistic")
+    print(eval.expected_loss(Y_test,logistic_prediction,eval.confusion_matrix(logistic_prediction,Y_test)))
+
+    # Checking KNN vs number of K-neighbors to identify optimum K 
+    eval.accuracy_v_param(X_train,Y_train,X_test,Y_test)
+
+    # Confusion matrices
+    eval.confusion_matrix(logistic_prediction,Y_test)
+    plt.figure()
+    sns.heatmap(eval.confusion_matrix(logistic_prediction, Y_test), annot=True)
+    eval.confusion_matrix(forest_prediction,Y_test)
+    plt.figure()
+    sns.heatmap(eval.confusion_matrix(forest_prediction, Y_test), annot=True)
+    eval.confusion_matrix(knn_prediction,Y_test)
+    plt.figure()
+    sns.heatmap(eval.confusion_matrix(knn_prediction, Y_test), annot=True)
+    
+    # Timing each model
+    eval.model_timing(X_train,Y_train,X_test)
+
 
     #fisher's LDA
     fisher_pred = methods.fishers_LDA(x_train, y_train, x_test)
-    #plt.show()
+    plt.show()
     print(fisher_pred)
-    correct = (y_test == fisher_pred)
-    correct.value_counts()
+    #correct = (y_test == fisher_pred)
+    #correct.value_counts()
+
+    #Logistic Regression
+
+# Fit the classifier on training data X_train, Y_train
+    # import time
+    # start_time = time.time()
 
 
-    # TODO score (don't submit this we need to do our own evaluations) add evaluation techniques here
-    #from sklearn.metrics import accuracy_score
-    #print(accuracy_score(y_test, forest_prediction))
+    # methods.classifier = LogisticRegression()
+    # predictions = methods.classifier.weighting(X_train, Y_train, X_test)
+    
+
+
+    # print("--- %s seconds ---" % (time.time() - start_time))
+
+
+
+    # # TODO score (don't submit this we need to do our own evaluations) add evaluation techniques here
+    # from sklearn.metrics import accuracy_score
+    # print(accuracy_score(Y_test, forest_prediction))
 
 
 
