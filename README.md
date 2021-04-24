@@ -33,7 +33,7 @@ Four machine learning models were used in this project.
 
 ### Code
 
-You can download a copy of all the files in this repository by cloning the git repository:
+The dataset was downloaded from https://www.kaggle.com/c/titanic. You can download a copy of all the files in this repository by cloning the git repository:
 
 git clone https://github.com/RifatM97/ML-group-project.git
 
@@ -44,3 +44,11 @@ To be able to run this project a working python environment is required. It is r
 * Install required modules using modules using Pip:`pip install -r requirements.txt`
   
 * Run main.py:`python main.py`
+
+## Authors
+
+Foundations of Machine Learning (INST0060) - Group Project
+
+Contributors: 
+
+Rifat Mahammod, Abid Razavi, Robert Shaw and Rajni Sandhu
