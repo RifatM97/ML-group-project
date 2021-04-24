@@ -43,8 +43,12 @@ def main():
     # forest_prediction = methods.randomForest(x_train, y_train, x_test, n_estimators=100)
 
     #fisher's LDA
-    methods.fishers_LDA(x_train, y_train, x_test, y_test)
+    fisher_pred = methods.fishers_LDA(x_train, y_train, x_test)
     #plt.show()
+    print(fisher_pred)
+    correct = (y_test == fisher_pred)
+    correct.value_counts()
+
 
     # TODO score (don't submit this we need to do our own evaluations) add evaluation techniques here
     #from sklearn.metrics import accuracy_score
