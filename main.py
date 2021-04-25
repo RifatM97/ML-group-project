@@ -106,12 +106,13 @@ def main():
     # ROC Curves
     #eval.ROC_curves(X_train, Y_train, X_valid, Y_valid, X_test, Y_test, model="knn")
     #eval.ROC_curves(X_train, Y_train, X_valid, Y_valid, X_test, Y_test, model="forest")
-    #eval.ROC_curves(X_train, Y_train, X_valid, Y_valid, X_test, Y_test, model="logistic")
-
-
+    eval.ROC_curves(X_train, Y_train, X_valid, Y_valid, X_test, Y_test, model="logistic")
 
     #fisher's LDA
-    #fisher_prediction = methods.fishers_LDA(X_train, Y_train, X_test, Y_test)
+    #fisher_pred = methods.fishers_LDA(X_train, Y_train, X_test)
+    #print(fisher_pred)
+    #correct = (y_test == fisher_pred)
+    #correct.value_counts()
     plt.show()
 
 
