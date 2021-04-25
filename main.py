@@ -38,12 +38,6 @@ def main():
 
     # TODO everyone can run their models here
 
-    fisher_pred = methods.fishers_LDA(X_train, Y_train, X_test)
-    print("Fisher accuracy:", eval.accuracy(fisher_pred, Y_test))
-    # eval.accuracy_v_sample(x, y, model="fisher")
-    # print(eval.expected_loss(Y_test, fisher_pred, eval.confusion_matrix(fisher_pred, Y_test)))
-    # print(fisher_pred)
-
     # Running the KNN model
     knn_prediction = methods.KNN_predict(X_train, Y_train, X_test, 30)
     # print(knn_prediction)
@@ -71,7 +65,7 @@ def main():
     #
     # # Confusion matrices
     eval.confusion_matrix(logistic_prediction,Y_test)
-    plt.figure()
+    #plt.figure()
     # sns.heatmap(eval.confusion_matrix(logistic_prediction, Y_test), annot=True)
     # eval.confusion_matrix(forest_prediction,Y_test)
     # plt.figure()
@@ -87,12 +81,10 @@ def main():
     fisher_pred = methods.fishers_LDA(X_train, Y_train, X_test)
     print("Fisher accuracy:", eval.accuracy(fisher_pred,Y_test))
     # plt.show()
-
     # eval.accuracy_v_sample(x, y, model="fisher")
     # print(eval.expected_loss(Y_test, fisher_pred, eval.confusion_matrix(fisher_pred, Y_test)))
     # print(fisher_pred)
-    #correct = (y_test == fisher_pred)
-    #correct.value_counts()
+
 
     #Logistic Regression
 
