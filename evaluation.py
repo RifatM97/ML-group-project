@@ -6,6 +6,7 @@ import methods
 import matplotlib.pyplot as plt
 import preprocessing as prep
 import methods
+import random2
 
 # Partitioning the input data into Train-Validation-Testing sets
 
@@ -41,6 +42,7 @@ def accuracy_v_param(X_train,Y_train,X_test,Y_test):
     plt.plot(K_values, accuracy_score)
     plt.xlabel("K")
     plt.ylabel("Accuracy")
+    plt.title("Accuracy vs number of K neighbours")
 
 # Accuracy vs Training sample size
 def accuracy_v_sample(x,y,model="knn"):
@@ -60,16 +62,17 @@ def accuracy_v_sample(x,y,model="knn"):
             accuracy_score.append(accuracy(y_predict,Y_test))
             
         elif model == "logistic":
-            ### THIS IS ABID'S FUNCTION (CHANGE ACCORDING TO THE DEFINITON)
+
             logistic = methods.LogisticRegression()
             y_predict = logistic.weighting(X_train, Y_train, X_test)
             accuracy_score.append(accuracy(y_predict,Y_test))
             
     # plotting routine
-    plt.plot(size, accuracy_score)
+    plt.plot(size, accuracy_score,label=model)
     plt.xlabel("Training sample")
     plt.ylabel("Accuracy")
     plt.title("Accuracy vs Training Sample")
+
 
 
 
@@ -168,7 +171,7 @@ def cross_validation_split(dataset, folds):
         # while loop to add elements to the folds
         while len(fold) < fold_size:
             # select a random element
-            r = random.randrange(df_copy.shape[0])
+            r = random2.randrange(df_copy.shape[0])
             # determine the index of this element 
             index = df_copy.index[r]
             # save the randomly selected line 
@@ -181,7 +184,7 @@ def cross_validation_split(dataset, folds):
         
     return dataset_split 
     
-def kfoldCV(dataset, f=5, k=5, n_estimators=100, model="logistic"):
+def kfoldCV(dataset, f=5, k=30, n_estimators=100, model="knn"):
     """Function runs chosen model into each fold and tests the model on different 
     sections. Inputs is the chosen dataset, number of folds, model name and model parameters.
     The output is an array of accuracy values for each fold."""
@@ -259,25 +262,50 @@ def model_timing(X_train, Y_train, X_test):
     forest_prediction = methods.randomForest(X_train, Y_train, X_test,n_estimators=100)
     print("Forest:","--- %s seconds ---" % (time.time() - start_time))
 
-# KNN threshod (HAVE TO MOVE THIS SOMEWHERE ELSE)
-def KNN_threshold(x, threshold=0.5):
+# KNN threshold 
+def KNN_threshold(X_train, Y_train, x, threshold=0.5):
     """Function uses threshold input for model prediction"""
 
-    y_probs = methods.KNN_prob(X_train, Y_train, x, K)
+    y_probs = methods.KNN_prob(X_train, Y_train, x, 30)
     predictions = y_probs >= threshold
     return np.multiply(predictions[:,1],1)
 
+# Forest threshold 
+def forest_threshold(X_train, Y_train, x, threshold=0.5):
+    """Function uses threshold input for model prediction"""
+
+    y_probs = methods.randomForest_prob(X_train,Y_train, x, 100)
+    predictions = y_probs >= threshold
+    return np.multiply(predictions[:,1],1)
+    
 # Calculate the recall and false positive rate for threshold options
-def get_roc(x, y):
+def get_roc(X_train, Y_train, x, y,model="knn"):
     tpr = []
     fpr = []
     # Define decision thresholds between 0-1
     thresholds = np.linspace(0,1, 400)
     for threshold in thresholds:
-        Y_predict = KNN_threshold(x, threshold=threshold)
-        cm = confusion_matrix(Y_predict, y)
-        tpr.append(recall(cm))
-        fpr.append(false_positive_ratio(cm))
+
+        if model == "knn":
+            Y_predict = KNN_threshold(X_train, Y_train, x,threshold=threshold)
+            cm = confusion_matrix(Y_predict, y)
+            tpr.append(recall(cm))
+            fpr.append(false_positive_ratio(cm))
+
+        elif model == "forest":
+             Y_predict = forest_threshold(X_train, Y_train, x,threshold=threshold)
+             cm = confusion_matrix(Y_predict, y)
+             tpr.append(recall(cm))
+             fpr.append(false_positive_ratio(cm))
+            
+        elif model == "logistic":
+            ### THIS IS ABID'S FUNCTION (CHANGE ACCORDING TO THE DEFINITON)
+            logistic = methods.LogisticRegression()
+            Y_predict = logistic.weighting(X_train, Y_train, x, threshold=threshold)
+            cm = confusion_matrix(Y_predict, y)
+            tpr.append(recall(cm))
+            fpr.append(false_positive_ratio(cm))
+            
     return fpr, tpr
   
 # Cutoff point of the best threshold by maximising the true positive rate and minimising the false positive rate
@@ -287,5 +315,29 @@ def get_cutoff(fpr, tpr):
     optimal_idx = np.argmax(np.array(tpr) - np.array(fpr))
     optimal_threshold = thresholds[optimal_idx]
     return optimal_idx, optimal_threshold
+
+def ROC_curves(X_train, Y_train, X_valid, Y_valid, X_test, Y_test,model="forest"):
+    """ROC curves for each model"""
+
+    train_roc = get_roc(X_train, Y_train, X_train, Y_train,model)
+    valid_roc = get_roc(X_train, Y_train, X_valid, Y_valid,model)
+    test_roc = get_roc(X_train, Y_train, X_test, Y_test,model)
+
+    train_cutoff = get_cutoff(train_roc[0], train_roc[1])   
+    valid_cutoff = get_cutoff(valid_roc[0], valid_roc[1])
+    test_cutoff = get_cutoff(test_roc[0], test_roc[1])
+
+    plt.figure()
+    plt.plot(train_roc[0], train_roc[1], label="Train", c='r')
+    plt.plot(valid_roc[0], valid_roc[1], label="Valid", c='b')
+    plt.plot(test_roc[0], test_roc[1], label="Test", c='g', linestyle='dashed')
+
+    plt.scatter(train_roc[0][train_cutoff[0]], train_roc[1][train_cutoff[0]], label="Train cutoff: {}".format(train_cutoff[1]), c='r')
+    plt.scatter(valid_roc[0][valid_cutoff[0]], valid_roc[1][valid_cutoff[0]], label="Valid cutoff: {}".format(valid_cutoff[1]), c='b')
+    plt.scatter(test_roc[0][test_cutoff[0]], test_roc[1][test_cutoff[0]], label="Test cutoff: {}".format(test_cutoff[1]), c='g', linestyle='dashed')
+    plt.title(model)
+    plt.xlabel("Precision")
+    plt.ylabel("Recall")
+    plt.legend()
 
 

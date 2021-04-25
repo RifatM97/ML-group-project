@@ -10,6 +10,20 @@ def randomForest(x_train, y_train, x_test, n_estimators):
     random_forest.fit(x_train, y_train)
     return random_forest.predict(x_test)
 
+# Random Forest Classifier - class membership probability
+def randomForest_prob(x_train, y_train, test, n_estimators):
+        
+    # classifier
+    random_forest = RandomForestClassifier(n_estimators=n_estimators, max_depth=3)
+    
+    # training model
+    random_forest.fit(x_train, y_train)
+      
+    # predict
+    prediction = random_forest.predict_proba(test)
+    
+    return prediction
+
 # KNN Classifier - class membership prediction
 def KNN_predict(x_train, y_train, test, K):
     'This function uses the K-Nearest Neighbours (kNN) classifier. The function trains the model on the training set'
