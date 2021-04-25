@@ -25,7 +25,8 @@ def main():
 
     # set cmd panda view and import data
     pd.set_option('display.max_columns', None)
-    alldata = prep.import2df(r'C:\Users\user\ML-group-project.git\ML-group-project\data\train.csv')
+    #alldata = prep.import2df(r'C:\Users\user\ML-group-project.git\ML-group-project\data\train.csv')
+    alldata = prep.import2df('data/train.csv')
 
     # fill in missing data and convert categories to one hot
     alldata = preprocessing(alldata)
@@ -78,7 +79,7 @@ def main():
 
 
     #fisher's LDA
-    fisher_pred = methods.fishers_LDA(x_train, y_train, x_test)
+    fisher_pred = methods.fishers_LDA(X_train, Y_train, X_test)
     plt.show()
     print(fisher_pred)
     #correct = (y_test == fisher_pred)

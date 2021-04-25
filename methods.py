@@ -47,17 +47,22 @@ def KNN_prob(x_train, y_train, test, K):
 
 #TODO enter your methods here 
 def fishers_LDA(x_train, y_train, x_test):
+    #separate the data by class
     inputs0 = x_train[y_train.Survived==0]
     inputs1 = x_train[y_train.Survived==1]
+    #Calculate the mean vector, variance matrix and number of data points for each data set
     m0, S0, N0 = max_lik(inputs0)
     m1, S1, N1 = max_lik(inputs1)
+    #Calculate the proportion of survived and died
+    #this is the prior for class 0 and 1
     p0 = N0/(N0+N1)
     p1 = N1/(N0+N1)
-    #For plot
     Sw = S0 + S1
     n_vars = len(x_train.columns)
+    #Calculate the weights
     w = np.dot(np.linalg.inv(Sw),(m0-m1).reshape(n_vars,1))
     N, D = x_train.shape
+    #normalise the weights
     w_norm = w/np.sum(w)
     # we want to make sure that the projection is in the right direction
     # i.e. giving larger projected values to class1 so:
@@ -83,19 +88,32 @@ def fishers_LDA(x_train, y_train, x_test):
     ax_train.set_xlabel(r"$\mathbf{w}^T\mathbf{x}$")
     ax_train.set_title("Projected Data: %s" % "fisher")
     ax_train.legend(classes)
-    #Predict
+    #To calculate threshold for prediction we need the mean and variance for the 
+    # separate classes in the training data
+    projected_inputs0 = project_data(inputs0, w)
+    projm0 = np.mean(projected_inputs0)
+    projs0 = np.var(projected_inputs0)
+    projected_inputs1 = project_data(inputs1, w)
+    projm1 = np.mean(projected_inputs1)
+    projs1 = np.var(projected_inputs1)
+    #Prediction
+    #Apply the weights to the test data to get to 1d
     projected_inputs_test = project_data(x_test, w)
-    predict_prob = 1/(1+(projected_inputs_test))
+    #create empty array to fill with prediction
     y_pred = [0]*len(x_test)
-    threshold = -0.2
-    #return projected_inputs_test
+    #Predict class for each element in test data
     for i in range(len(x_test)):
-      x = predict_prob[i]
-      if x >= threshold:
-        y_pred[i] = 1
-      else:
+      x = projected_inputs_test[i]
+      #Calculate the probability of each point being in class0 or class 1
+      prob_c0 = (math.log(p0)+math.log(1/math.sqrt(projs0))-(((x-projm0)**2)/(2*projs0)))
+      prob_c1 = (math.log(p1)+math.log(1/math.sqrt(projs1))-(((x-projm1)**2)/(2*projs1)))
+      if prob_c0 >= prob_c1:
         y_pred[i] = 0
+      else:
+        y_pred[i] = 1
+    print(y_pred)
     return y_pred
+
 
 def max_lik(data):
     N = len(data)
