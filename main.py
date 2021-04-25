@@ -38,34 +38,40 @@ def main():
 
     # TODO everyone can run their models here
 
+    fisher_pred = methods.fishers_LDA(X_train, Y_train, X_test)
+    print("Fisher accuracy:", eval.accuracy(fisher_pred, Y_test))
+    # eval.accuracy_v_sample(x, y, model="fisher")
+    # print(eval.expected_loss(Y_test, fisher_pred, eval.confusion_matrix(fisher_pred, Y_test)))
+    # print(fisher_pred)
+
     # Running the KNN model
-    # knn_prediction = methods.KNN_predict(X_train, Y_train, X_test, 30)
+    knn_prediction = methods.KNN_predict(X_train, Y_train, X_test, 30)
     # print(knn_prediction)
-    # print(eval.accuracy(knn_prediction,Y_test))
-    # eval.accuracy_v_sample(x,y,model="knn")
-    # print(eval.expected_loss(Y_test,knn_prediction,eval.confusion_matrix(knn_prediction,Y_test)))
+    print("KNN accuracy:",eval.accuracy(knn_prediction,Y_test))
+    eval.accuracy_v_sample(x,y,model="knn")
+    print(eval.expected_loss(Y_test,knn_prediction,eval.confusion_matrix(knn_prediction,Y_test)))
     #
     # Run random forest model with 100 n_estimators
-    # forest_prediction = methods.randomForest(X_train, Y_train, X_test, n_estimators=100)
-    # # print(forest_prediction)
-    # print(eval.accuracy(forest_prediction,Y_test))
-    # eval.accuracy_v_sample(x,y,model="forest")
-    # print(eval.expected_loss(Y_test,forest_prediction,eval.confusion_matrix(forest_prediction,Y_test)))
+    forest_prediction = methods.randomForest(X_train, Y_train, X_test, n_estimators=100)
+    # print(forest_prediction)
+    print("Forest accuracy:",eval.accuracy(forest_prediction,Y_test))
+    eval.accuracy_v_sample(x,y,model="forest")
+    print(eval.expected_loss(Y_test,forest_prediction,eval.confusion_matrix(forest_prediction,Y_test)))
     #
     # # Run Logistic Regression model
-    # logistic = methods.LogisticRegression()
-    # logistic_prediction = logistic.weighting(X_train,Y_train, X_test)
+    logistic = methods.LogisticRegression()
+    logistic_prediction = logistic.weighting(X_train,Y_train, X_test)
     # print(logistic_prediction)
-    # print(eval.accuracy(logistic_prediction,Y_test))
-    # eval.accuracy_v_sample(x,y,model="logistic")
-    # print(eval.expected_loss(Y_test,logistic_prediction,eval.confusion_matrix(logistic_prediction,Y_test)))
+    print("Logistic accuracy:",eval.accuracy(logistic_prediction,Y_test))
+    eval.accuracy_v_sample(x,y,model="logistic")
+    print(eval.expected_loss(Y_test,logistic_prediction,eval.confusion_matrix(logistic_prediction,Y_test)))
     #
     # # Checking KNN vs number of K-neighbors to identify optimum K
-    # eval.accuracy_v_param(X_train,Y_train,X_test,Y_test)
+    eval.accuracy_v_param(X_train,Y_train,X_test,Y_test)
     #
     # # Confusion matrices
-    # eval.confusion_matrix(logistic_prediction,Y_test)
-    # plt.figure()
+    eval.confusion_matrix(logistic_prediction,Y_test)
+    plt.figure()
     # sns.heatmap(eval.confusion_matrix(logistic_prediction, Y_test), annot=True)
     # eval.confusion_matrix(forest_prediction,Y_test)
     # plt.figure()
@@ -78,10 +84,9 @@ def main():
     # eval.model_timing(X_train,Y_train,X_test)
 
 
-    #fisher's LDA
     fisher_pred = methods.fishers_LDA(X_train, Y_train, X_test)
     print("Fisher accuracy:", eval.accuracy(fisher_pred,Y_test))
-    plt.show()
+    # plt.show()
 
     # eval.accuracy_v_sample(x, y, model="fisher")
     # print(eval.expected_loss(Y_test, fisher_pred, eval.confusion_matrix(fisher_pred, Y_test)))
