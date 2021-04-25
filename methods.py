@@ -47,18 +47,32 @@ def KNN_prob(x_train, y_train, test, K):
 
 #TODO enter your methods here 
 def fishers_LDA(x_train, y_train, x_test):
+    # seperate target by classes
+    inputs0 = []
+    inputs1 = []
+    for i in range(len(y_train)):
+        if y_train[i] == 0:
+            inputs0.append(x_train[i])
+        else:
+            inputs1.append(x_train[i])
+    # convert to numpy array
+    inputs0 = np.array(inputs0)
+    inputs1 = np.array(inputs1)
+
+    #TODO inputs are numpy arrays so  these won't work
     #separate the data by class
-    inputs0 = x_train[y_train.Survived==0]
-    inputs1 = x_train[y_train.Survived==1]
+    # inputs0 = x_train[y_train.Survived==0]
+    # inputs1 = x_train[y_train.Survived==1]
+
     #Calculate the mean vector, variance matrix and number of data points for each data set
-    m0, S0, N0 = max_lik(inputs0)
-    m1, S1, N1 = max_lik(inputs1)
+    m0, S0, N0 = max_lik2(inputs0)
+    m1, S1, N1 = max_lik2(inputs1)
     #Calculate the proportion of survived and died
     #this is the prior for class 0 and 1
     p0 = N0/(N0+N1)
     p1 = N1/(N0+N1)
     Sw = S0 + S1
-    n_vars = len(x_train.columns)
+    n_vars = len(x_train[0])
     #Calculate the weights
     w = np.dot(np.linalg.inv(Sw),(m0-m1).reshape(n_vars,1))
     N, D = x_train.shape
@@ -71,15 +85,20 @@ def fishers_LDA(x_train, y_train, x_test):
     #print(projected_m0, projected_m1)
     if projected_m0 > projected_m1:
         w_norm = -w_norm
+
     #apply the weights to the training data
-    projected_inputs_train = project_data(x_train, w)
+    #TODO you were using the un-normalised weights here, not sure if intentional or not. Changed to w_norm
+    projected_inputs_train = project_data(x_train, w_norm)
     # In case the classes are not integers, this is a simple encoding from class to integer.
     N = x_train.shape[0]
     targets_train = np.empty(N)
     #we assume there are only 2 classes in the target variable
     # get the class values as a pandas Series object
-    class_values = y_train['Survived']
-    classes = class_values.unique()
+    # class_values = y_train['Survived']
+    # classes = class_values.unique()
+    #TODO data is coming in as numpy arrays not dataframes so these lines don't work
+    class_values = y_train
+    classes = np.unique(class_values)
     for class_id, class_name in enumerate(classes):
         is_class = (class_values == class_name)
         targets_train[is_class] = class_id
@@ -115,14 +134,35 @@ def fishers_LDA(x_train, y_train, x_test):
     return y_pred
 
 
-def max_lik(data):
-    N = len(data)
-    m = np.array(data.apply(sum)/N)
-    S = np.zeros((15,15))
-    data1 = np.array(data)
-    for i in range(N):
-        S = S + np.dot((data1[i,:]-m).reshape(15,1),(data1[i,:]-m).reshape(15,1).T)
-    return m, S/N, N
+def max_lik2(data):
+    N, dim = data.shape
+    mu = np.mean(data, 0)
+    Sigma = np.zeros((dim, dim))
+    # the covariance matrix requires us to sum the dyadic product of
+    # each sample minus the mean.
+    for x in data:
+        # subtract mean from data point, and reshape to column vector
+        # note that numpy.matrix is being used so that the * operator
+        # in the next line performs the outer-product v * v.T
+        x_minus_mu = np.matrix(x - mu).reshape((dim, 1))
+        # the outer-product v * v.T of a k-dimentional vector v gives
+        # a (k x k)-matrix as output. This is added to the running total.
+        Sigma += x_minus_mu * x_minus_mu.T
+    # Sigma is unnormalised, so we divide by the number of datapoints
+    Sigma /= N
+    # we convert Sigma matrix back to an array to avoid confusion later
+    return mu, np.asarray(Sigma), N
+
+#TODO this could probably work but the apply(sum) won't work on np arrays and we could
+# run into issues if we change the number of input variables
+# def max_lik(data):
+#     N = len(data)
+#     m = np.array(data.apply(sum)/N)
+#     S = np.zeros((15,15))
+#     data1 = np.array(data)
+#     for i in range(N):
+#         S = S + np.dot((data1[i,:]-m).reshape(15,1),(data1[i,:]-m).reshape(15,1).T)
+#     return m, S/N, N
 
 def project_data(data, weights):
     """
