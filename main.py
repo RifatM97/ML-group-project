@@ -26,7 +26,8 @@ def main():
 
     # set cmd panda view and import data
     pd.set_option('display.max_columns', None)
-    alldata = prep.import2df(r'C:\Users\user\ML-group-project.git\ML-group-project\data\train.csv')
+    #alldata = prep.import2df(r'C:\Users\user\ML-group-project.git\ML-group-project\data\train.csv')
+    alldata = prep.import2df('data/train.csv')
 
     # fill in missing data and convert categories to one hot
     alldata = preprocessing(alldata)
@@ -108,11 +109,13 @@ def main():
     #eval.ROC_curves(X_train, Y_train, X_valid, Y_valid, X_test, Y_test, model="forest")
     eval.ROC_curves(X_train, Y_train, X_valid, Y_valid, X_test, Y_test, model="logistic")
 
-    #fisher's LDA
-    #fisher_pred = methods.fishers_LDA(X_train, Y_train, X_test)
-    #print(fisher_pred)
-    #correct = (y_test == fisher_pred)
-    #correct.value_counts()
+    # Fisher LDA
+    fisher_pred = methods.fishers_LDA(X_train, Y_train, X_test)
+    print("Fisher accuracy:", eval.accuracy(fisher_pred,Y_test))
+    # plt.show()
+    # eval.accuracy_v_sample(x, y, model="fisher")
+    # print(eval.expected_loss(Y_test, fisher_pred, eval.confusion_matrix(fisher_pred, Y_test)))
+    # print(fisher_pred)
     plt.show()
 
 
