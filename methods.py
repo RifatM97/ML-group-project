@@ -58,8 +58,7 @@ def KNN_prob(x_train, y_train, test, K):
     
     return prediction
 
-
-#TODO enter your methods here 
+# Fisher's LDA  
 def fishers_LDA(x_train, y_train, x_test):
     # separate target by classes
     inputs0 = []
@@ -108,12 +107,14 @@ def fishers_LDA(x_train, y_train, x_test):
     for class_id, class_name in enumerate(classes):
         is_class = (class_values == class_name)
         targets_train[is_class] = class_id
-    ax_train = plot_class_histograms(projected_inputs_train, targets_train)
-    # label x axis
-    ax_train.set_xlabel(r"$\mathbf{w}^T\mathbf{x}$")
-    ax_train.set_title("Projected Data: %s" % "fisher")
-    ax_train.legend(classes)
-    #To calculate threshold for prediction we need the mean and variance for the 
+
+    # ax_train = plot_class_histograms(projected_inputs_train, targets_train)
+    # # label x axis
+    # ax_train.set_xlabel(r"$\mathbf{w}^T\mathbf{x}$")
+    # ax_train.set_title("Projected Data: %s" % "fisher")
+    # ax_train.legend(classes)
+    
+    # To calculate threshold for prediction we need the mean and variance for the 
     # separate classes in the training data
     projected_inputs0 = project_data(inputs0, w)
     projm0 = np.mean(projected_inputs0)
@@ -136,7 +137,7 @@ def fishers_LDA(x_train, y_train, x_test):
         y_pred[i] = 0
       else:
         y_pred[i] = 1
-    print(y_pred)
+    
     return y_pred
 
 
@@ -204,7 +205,7 @@ def plot_class_histograms(
         class_inputs = inputs[class_assignments==class_id]
      #   ax.hist(class_inputs, bins=bins, color=colors[i], alpha=0.6)
         ax.hist(class_inputs, bins=bins, alpha=0.6)
-    print("class_ids = %r" % (class_ids,))
+    #print("class_ids = %r" % (class_ids,))
     return ax
 
 # Creating a classifier for Logistic Regression

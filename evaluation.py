@@ -62,19 +62,19 @@ def accuracy_v_sample(x,y,model="knn"):
             accuracy_score.append(accuracy(y_predict,Y_test))
             
         elif model == "logistic":
-
             logistic = methods.LogisticRegression()
             y_predict = logistic.weighting(X_train, Y_train, X_test)
             accuracy_score.append(accuracy(y_predict,Y_test))
-            
+
+        elif model == "fisher":
+            y_predict = methods.fishers_LDA(X_train, Y_train, X_test)
+            accuracy_score.append(accuracy(y_predict,Y_test))
+                                  
     # plotting routine
     plt.plot(size, accuracy_score,label=model)
     plt.xlabel("Training sample")
     plt.ylabel("Accuracy")
     plt.title("Accuracy vs Training Sample")
-
-
-
 
 # Precision of the predictions
 def precision(cm):
@@ -210,6 +210,8 @@ def kfoldCV(dataset, f=5, k=30, n_estimators=100, model="knn"):
             test = methods.KNN_predict(cv[:,0:4],cv[:,4],data[i][:,0:4],k)
         elif model == "forest":
             test = methods.randomForest(cv[:,0:4],cv[:,4],data[i][:,0:4],n_estimators)
+        elif model == "fisher":
+            test = methods.fishers_LDA(cv[:,0:4],cv[:,4],data[i][:,0:4])
             
         # calculate accuracy    
         acc=(test == data[i][:,4]).sum()
@@ -234,6 +236,9 @@ def accuracy_v_fold(x,model="knn"):
             cross_vals.append(mean(cv_val))
         elif model == "forest":
             cv_val = kfoldCV(x, f=i, k=5, model="forest")
+            cross_vals.append(mean(cv_val))
+        elif model == "forest":
+            cv_val = kfoldCV(x, f=i, k=5, model="fisher")
             cross_vals.append(mean(cv_val))
             
     # plotting routine
@@ -261,6 +266,13 @@ def model_timing(X_train, Y_train, X_test):
     start_time = time.time()
     forest_prediction = methods.randomForest(X_train, Y_train, X_test,n_estimators=100)
     print("Forest:","--- %s seconds ---" % (time.time() - start_time))
+
+    # Fisher's LDA model time
+    start_time = time.time()
+    fisher_prediction = methods.fishers_LDA(X_train, Y_train, X_test)
+    print("LDA:","--- %s seconds ---" % (time.time() - start_time))
+
+
 
 # KNN threshold 
 def KNN_threshold(X_train, Y_train, x, threshold=0.5):
@@ -299,12 +311,17 @@ def get_roc(X_train, Y_train, x, y,model="knn"):
              fpr.append(false_positive_ratio(cm))
             
         elif model == "logistic":
-            ### THIS IS ABID'S FUNCTION (CHANGE ACCORDING TO THE DEFINITON)
             logistic = methods.LogisticRegression()
             Y_predict = logistic.weighting(X_train, Y_train, x, threshold=threshold)
             cm = confusion_matrix(Y_predict, y)
             tpr.append(recall(cm))
             fpr.append(false_positive_ratio(cm))
+        
+        elif model == "fisher":
+             Y_predict = fisher_threshold(X_train, Y_train, x,threshold=threshold)
+             cm = confusion_matrix(Y_predict, y)
+             tpr.append(recall(cm))
+             fpr.append(false_positive_ratio(cm))
             
     return fpr, tpr
   
