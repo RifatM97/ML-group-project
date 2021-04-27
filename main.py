@@ -25,8 +25,8 @@ def main():
 
     # set cmd panda view and import data
     pd.set_option('display.max_columns', None)
-    alldata = prep.import2df(r'C:\Users\user\ML-group-project.git\ML-group-project\data\train.csv')
-    #alldata = prep.import2df('data/train.csv')
+    # alldata = prep.import2df(r'C:\Users\user\ML-group-project.git\ML-group-project\data\train.csv')
+    alldata = prep.import2df('data/train.csv')
 
     # fill in missing data and convert categories to one hot
     alldata = preprocessing(alldata)
@@ -112,10 +112,10 @@ def main():
     eval.model_timing(X_train,Y_train,X_test)
 
     # K-Fold Cross Validation (NOT WORKING FOR SOME REASON)
-    # cv_val = eval.kfoldCV(x, f=3, k=30, model="knn") # 3 main folds
-    # print("Result from each fold:", cv_val)
-    # print("Mean:", stats.mean(cv_val))
-    # print("Standard deviation:", stats.stdev(cv_val))
+    cv_val = eval.kfoldCV(alldata, f=3, k=30, model="knn") # 3 main folds
+    print("Result from each fold:", cv_val)
+    print("Mean:", stats.mean(cv_val))
+    print("Standard deviation:", stats.stdev(cv_val))
 
     # ROC Curves
     eval.ROC_curves(X_train, Y_train, X_valid, Y_valid, X_test, Y_test, model="knn")
