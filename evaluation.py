@@ -232,7 +232,7 @@ def accuracy_v_fold(x,model="knn"):
             cv_val = kfoldCV(x, f=i, k=5, model="logistic")
             cross_vals.append(mean(cv_val))
         elif model == "knn":
-            cv_val = kfoldCV(x, f=i, k=5, model="knn")
+            cv_val = kfoldCV(x, f=i, k=30, model="knn")
             cross_vals.append(mean(cv_val))
         elif model == "forest":
             cv_val = kfoldCV(x, f=i, k=5, model="forest")
@@ -245,6 +245,7 @@ def accuracy_v_fold(x,model="knn"):
     plt.plot(folds, cross_vals)
     plt.xlabel("Folds")
     plt.ylabel("Accuracy")
+    plt.title("Accuracy vs K-folds")
 
 # Model timing 
 def model_timing(X_train, Y_train, X_test):
@@ -271,8 +272,6 @@ def model_timing(X_train, Y_train, X_test):
     start_time = time.time()
     fisher_prediction = methods.fishers_LDA(X_train, Y_train, X_test)
     print("LDA:","--- %s seconds ---" % (time.time() - start_time))
-
-
 
 # KNN threshold 
 def KNN_threshold(X_train, Y_train, x, threshold=0.5):

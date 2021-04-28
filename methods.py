@@ -48,7 +48,7 @@ def KNN_prob(x_train, y_train, test, K):
     "and predicts the probability of survival of the testing set"
     
     # KNN classifier
-    my_classifier = KNeighborsClassifier(n_neighbors=K)
+    my_classifier = KNeighborsClassifier(n_neighbors=K, weights='distance')
     
     # training model
     KNN = my_classifier.fit(x_train,y_train)
@@ -138,7 +138,7 @@ def fishers_LDA(x_train, y_train, x_test):
       else:
         y_pred[i] = 1
     
-    return y_pred
+    return np.array(y_pred)
 
 
 def max_lik(data):

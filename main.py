@@ -25,8 +25,8 @@ def main():
 
     # set cmd panda view and import data
     pd.set_option('display.max_columns', None)
-    # alldata = prep.import2df(r'C:\Users\user\ML-group-project.git\ML-group-project\data\train.csv')
-    alldata = prep.import2df('data/train.csv')
+    alldata = prep.import2df(r'C:\Users\user\ML-group-project.git\ML-group-project\data\train.csv')
+    #alldata = prep.import2df('data/train.csv')
 
     # fill in missing data and convert categories to one hot
     alldata = preprocessing(alldata)
@@ -44,7 +44,7 @@ def main():
     print("------Results for KNN--------")
     print(knn_prediction)
     print("KNN accuracy:",eval.accuracy(knn_prediction,Y_test))
-    print("KNN exepcted loss:",eval.expected_loss(Y_test,knn_prediction,eval.confusion_matrix(knn_prediction,Y_test)))
+    print("KNN expected loss:",eval.expected_loss(Y_test,knn_prediction,eval.confusion_matrix(knn_prediction,Y_test)))
     ### print("Cross entropy error:",eval.cross_entropy_error(Y_test,methods.KNN_prob(X_train, Y_train, X_test, 30))) (NAN error)
     print("KNN misclassification error:", eval.misclassification_error(Y_test,knn_prediction))
     print("True Positives:", eval.recall(eval.confusion_matrix(knn_prediction,Y_test)))
@@ -86,7 +86,7 @@ def main():
     eval.accuracy_v_sample(x,y,model="logistic")
     eval.accuracy_v_sample(x,y,model="forest")
     eval.accuracy_v_sample(x,y,model="knn")
-    #eval.accuracy_v_sample(x,y,model="fisher") #(NOT WORKING)
+    # eval.accuracy_v_sample(x,y,model="fisher") #NOT WORKING
     plt.legend()
     
     # Confusion matrices
@@ -112,15 +112,35 @@ def main():
     eval.model_timing(X_train,Y_train,X_test)
 
     # K-Fold Cross Validation (NOT WORKING FOR SOME REASON)
-    cv_val = eval.kfoldCV(alldata, f=3, k=30, model="knn") # 3 main folds
-    print("Result from each fold:", cv_val)
+    cv_val = eval.kfoldCV(alldata, f=3, k=30, model="knn") #KNN
+    print("KNN Result from each fold:", cv_val)
+    print("Mean:", stats.mean(cv_val))
+    print("Standard deviation:", stats.stdev(cv_val))
+    cv_val = eval.kfoldCV(alldata, f=3, k=30, model="fisher") #LDA
+    print("LDA Result from each fold:", cv_val)
+    print("Mean:", stats.mean(cv_val))
+    print("Standard deviation:", stats.stdev(cv_val))
+    cv_val = eval.kfoldCV(alldata, f=3, k=30, model="forest") #Forest
+    print("Random Forest Result from each fold:", cv_val)
+    print("Mean:", stats.mean(cv_val))
+    print("Standard deviation:", stats.stdev(cv_val))
+    cv_val = eval.kfoldCV(alldata, f=3, k=30, model="logistic") #Logistic
+    print("Logistic regression Result from each fold:", cv_val)
     print("Mean:", stats.mean(cv_val))
     print("Standard deviation:", stats.stdev(cv_val))
 
+    # K-Fold mean accuracy vs number of folds
+    plt.figure()
+    eval.accuracy_v_fold(alldata, model="knn")
+    eval.accuracy_v_fold(alldata, model="forest")
+    eval.accuracy_v_fold(alldata, model="logistic")
+    #eval.accuracy_v_fold(alldata, model="fisher")
+    plt.legend()
+
     # ROC Curves
-    eval.ROC_curves(X_train, Y_train, X_valid, Y_valid, X_test, Y_test, model="knn")
-    eval.ROC_curves(X_train, Y_train, X_valid, Y_valid, X_test, Y_test, model="forest")
-    # eval.ROC_curves(X_train, Y_train, X_valid, Y_valid, X_test, Y_test, model="logistic") (VERY SLOW)
+    # eval.ROC_curves(X_train, Y_train, X_valid, Y_valid, X_test, Y_test, model="knn")
+    # eval.ROC_curves(X_train, Y_train, X_valid, Y_valid, X_test, Y_test, model="forest")
+    # eval.ROC_curves(X_train, Y_train, X_valid, Y_valid, X_test, Y_test, model="logistic") #(VERY SLOW)
     # eval.ROC_curves(X_train, Y_train, X_valid, Y_valid, X_test, Y_test, model="fisher")
 
     # fisher_pred = methods.fishers_LDA(X_train, Y_train, X_test)
@@ -129,6 +149,7 @@ def main():
 
 
     # TODO score (don't submit this we need to do our own evaluations) add evaluation techniques here
+    ### WE SHOULD SAVE ALL THE FIGURES IN ONE FILE ###
 
 
 if __name__ == "__main__":
