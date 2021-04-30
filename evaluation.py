@@ -48,7 +48,7 @@ def accuracy_v_param(X_train,Y_train,X_test,Y_test):
 def accuracy_v_sample(x,y,model="knn"):
     """Function plots the accuracy against the sample size of different models. The inputs is the chosen 
     model. The output is the plot"""
-    size = np.arange(0.1,0.9,0.1)
+    size = np.arange(0.11,0.9,0.1)
     accuracy_score = []
     for i in size:
         X_train, Y_train, X_valid, Y_valid, X_test, Y_test=prep.partition(x,y,train_portion=i)
@@ -237,12 +237,12 @@ def accuracy_v_fold(x,model="knn"):
         elif model == "forest":
             cv_val = kfoldCV(x, f=i, k=5, model="forest")
             cross_vals.append(mean(cv_val))
-        elif model == "forest":
+        elif model == "fisher":
             cv_val = kfoldCV(x, f=i, k=5, model="fisher")
             cross_vals.append(mean(cv_val))
             
     # plotting routine
-    plt.plot(folds, cross_vals)
+    plt.plot(folds, cross_vals, label=model)
     plt.xlabel("Folds")
     plt.ylabel("Accuracy")
     plt.title("Accuracy vs K-folds")
