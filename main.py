@@ -8,6 +8,7 @@ import preprocessing as prep
 import evaluation as eval
 import methods
 import random2
+import exploratory as expl
 
 
 def preprocessing(df):
@@ -18,18 +19,26 @@ def preprocessing(df):
     df = prep.extractTitles(df)
     #remove outlier for Fare
     df = df[df.Fare != max(df.Fare)]
-    return prep.convert2onehot(df, 'Sex', 'Embarked', 'Title')
+    return prep.convert2onehot(df, 'Sex', 'Embarked', 'Title'), df
     #return df.drop(['Sex', 'Embarked', 'Title'], axis=1)
+
+def explore(df):
+    expl.variable_info(df)
+    expl.plot_heatmap(df)
+    expl.plot_overlay_hist(df)
 
 def main():
 
     # set cmd panda view and import data
     pd.set_option('display.max_columns', None)
-    alldata = prep.import2df(r'C:\Users\user\ML-group-project.git\ML-group-project\data\train.csv')
+    alldata = prep.import2df('data/train.csv')
     #alldata = prep.import2df('data/train.csv')
 
     # fill in missing data and convert categories to one hot
-    alldata = preprocessing(alldata)
+    alldata, alldata_discrete = preprocessing(alldata)
+
+    #Produce some exploratory plots of the data
+    explore(alldata_discrete)
 
     # split 80:10:10 train-validation-test
     x = alldata.drop('Survived', axis=1)
@@ -37,18 +46,18 @@ def main():
     X_train, Y_train, X_valid, Y_valid, X_test, Y_test = prep.partition(x, y)
     
     # Checking KNN vs number of K-neighbors to identify optimum K 
-    eval.accuracy_v_param(X_train,Y_train,X_test,Y_test)
+    #eval.accuracy_v_param(X_train,Y_train,X_test,Y_test)
 
     # Running the KNN model
-    knn_prediction = methods.KNN_predict(X_train, Y_train, X_test, 30)
-    print("------Results for KNN--------")
-    print(knn_prediction)
-    print("KNN accuracy:",eval.accuracy(knn_prediction,Y_test))
-    print("KNN expected loss:",eval.expected_loss(Y_test,knn_prediction,eval.confusion_matrix(knn_prediction,Y_test)))
-    print("Cross entropy error:",eval.cross_entropy_error(Y_test,methods.KNN_prob(X_train, Y_train, X_test, 30))) #(NAN error)
-    print("KNN misclassification error:", eval.misclassification_error(Y_test,knn_prediction))
-    print("True Positives:", eval.recall(eval.confusion_matrix(knn_prediction,Y_test)))
-    print("False Negatives:", eval.false_positive_ratio(eval.confusion_matrix(knn_prediction,Y_test)))
+    #knn_prediction = methods.KNN_predict(X_train, Y_train, X_test, 30)
+    #print("------Results for KNN--------")
+    #print(knn_prediction)
+    #print("KNN accuracy:",eval.accuracy(knn_prediction,Y_test))
+    #print("KNN expected loss:",eval.expected_loss(Y_test,knn_prediction,eval.confusion_matrix(knn_prediction,Y_test)))
+    #print("Cross entropy error:",eval.cross_entropy_error(Y_test,methods.KNN_prob(X_train, Y_train, X_test, 30))) #(NAN error)
+    #print("KNN misclassification error:", eval.misclassification_error(Y_test,knn_prediction))
+    #print("True Positives:", eval.recall(eval.confusion_matrix(knn_prediction,Y_test)))
+    #print("False Negatives:", eval.false_positive_ratio(eval.confusion_matrix(knn_prediction,Y_test)))
 
     # # Run random forest model with 100 n_estimators
     # forest_prediction = methods.randomForest(X_train, Y_train, X_test, n_estimators=100)
@@ -72,14 +81,15 @@ def main():
     # print("False Negatives:", eval.false_positive_ratio(eval.confusion_matrix(logistic_prediction,Y_test)))
 
     # # Running Fisher LDA
-    # fisher_pred = methods.fishers_LDA(X_train, Y_train, X_test)
-    # print("------Results for Fisher LDA--------")
-    # print(fisher_pred)
-    # print("LDA accuracy:", eval.accuracy(fisher_pred,Y_test))
-    # print("LDA expected loss:",eval.expected_loss(Y_test, fisher_pred, eval.confusion_matrix(fisher_pred, Y_test)))
-    # print("LDA misclassification error:", eval.misclassification_error(Y_test,fisher_pred))
-    # print("True Positives:", eval.recall(eval.confusion_matrix(fisher_pred,Y_test)))
-    # print("False Negatives:", eval.false_positive_ratio(eval.confusion_matrix(fisher_pred,Y_test)))
+    fisher_pred = methods.fishers_LDA(X_train, Y_train, X_test)
+    plt.show()
+    print("------Results for Fisher LDA--------")
+    print(fisher_pred)
+    print("LDA accuracy:", eval.accuracy(fisher_pred,Y_test))
+    print("LDA expected loss:",eval.expected_loss(Y_test, fisher_pred, eval.confusion_matrix(fisher_pred, Y_test)))
+    print("LDA misclassification error:", eval.misclassification_error(Y_test,fisher_pred))
+    print("True Positives:", eval.recall(eval.confusion_matrix(fisher_pred,Y_test)))
+    print("False Negatives:", eval.false_positive_ratio(eval.confusion_matrix(fisher_pred,Y_test)))
 
     # # Model accuracies vs % Training Sample
     # plt.figure()
@@ -145,7 +155,7 @@ def main():
 
     # fisher_pred = methods.fishers_LDA(X_train, Y_train, X_test)
     # print(fisher_pred)
-    plt.show()
+    #plt.show()
 
 
     # TODO score (don't submit this we need to do our own evaluations) add evaluation techniques here

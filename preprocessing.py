@@ -77,7 +77,7 @@ def extractTitles(df):
     """EXTRACT title column with Mr,Mrs,Miss,Master or rare"""
     df['Title'] = df.Name.str.extract(' ([A-Za-z]+)\.', expand=False)
     df['Title'] = df['Title'].replace(
-        ['Capt', 'Col', 'Countess', 'Lady', 'Col', 'Don', 'Dona', 'Dr', 'Major', 'Jonkheer', 'Rev', 'Sir'], 'Rare')
+        ['Capt', 'Col', 'Countess', 'Lady', 'Don', 'Dona', 'Dr', 'Major', 'Jonkheer', 'Rev', 'Sir'], 'Rare')
     df['Title'] = df['Title'].replace('Mlle', 'Miss')
     df['Title'] = df['Title'].replace('Ms', 'Miss')
     df['Title'] = df['Title'].replace('Mme', 'Mrs')
@@ -96,11 +96,12 @@ def partition(x, y, train_portion=None):
     # Decide training portion
     if train_portion is None:
         train_portion = 0.8
+        valid_portion = 0.1
+        test_portion = 0.1
     else:
         train_portion = train_portion
-
-    valid_portion = 0.1
-    test_portion = 0.1
+        valid_portion = 0.1
+        test_portion = 1-train_portion-valid_portion
 
     # Converting the df to numpy arrays
     y = y.to_numpy()
@@ -123,22 +124,22 @@ def partition(x, y, train_portion=None):
 
     return X_train, Y_train, X_valid, Y_valid, X_test, Y_test
 
-def main():
-    """This section is for testing the preprocessing, will be run if you run this file only"""
-    pd.set_option('display.max_columns', None)
+#def main():
+#    """This section is for testing the preprocessing, will be run if you run this file only"""
+#    pd.set_option('display.max_columns', None)
 
-    train = import2df('data/train.csv')
-    print(train.to_string())
-    print(train.isna().sum())
+#    train = import2df('data/train.csv')
+#    print(train.to_string())
+#    print(train.isna().sum())
 
-    sex2binary(train)
-    fillagewithmean(train)
-    fillembarked3(train)
-    train = extractTitles(train)
-    print(train)
-    train = convert2onehot(train, 'Sex', 'Embarked', 'Title')
-    print(train)
+ #   sex2binary(train)
+ #   fillagewithmean(train)
+ #   fillembarked3(train)
+ #   train = extractTitles(train)
+ #   print(train)
+ #   train = convert2onehot(train, 'Sex', 'Embarked', 'Title')
+ #   print(train)
 
 
-if __name__ == "__main__":
-    main()
+#if __name__ == "__main__":
+#    main()
