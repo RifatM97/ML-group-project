@@ -45,36 +45,40 @@ def accuracy_v_param(X_train,Y_train,X_test,Y_test):
     plt.title("Accuracy vs number of K neighbours")
 
 # Accuracy vs Training sample size
-def accuracy_v_sample(x,y,model="knn"):
+def accuracy_v_sample(x,y):
     """Function plots the accuracy against the sample size of different models. The inputs is the chosen 
     model. The output is the plot"""
     size = np.arange(0.11,0.9,0.1)
-    accuracy_score = []
+    KNN_accuracy_score = []
+    forest_accuracy_score = []
+    logistic_accuracy_score = []
+    fisher_accuracy_score = []
     for i in size:
         X_train, Y_train, X_valid, Y_valid, X_test, Y_test=prep.partition(x,y,train_portion=i)
-        
-        if model == "knn":
-            y_predict = methods.KNN_predict(X_train, Y_train, X_test, 30)
-            accuracy_score.append(accuracy(y_predict,Y_test))
-            
-        elif model == "forest":
-            y_predict = methods.randomForest(X_train, Y_train, X_test,100)
-            accuracy_score.append(accuracy(y_predict,Y_test))
-            
-        elif model == "logistic":
-            logistic = methods.LogisticRegression()
-            y_predict = logistic.weighting(X_train, Y_train, X_test)
-            accuracy_score.append(accuracy(y_predict,Y_test))
+     
+        KNN_predict = methods.KNN_predict(X_train, Y_train, X_test, 30)
+        KNN_accuracy_score.append(accuracy(KNN_predict,Y_test))
 
-        elif model == "fisher":
-            y_predict = methods.fishers_LDA(X_train, Y_train, X_test)
-            accuracy_score.append(accuracy(y_predict,Y_test))
-                                  
+        forest_predict = methods.randomForest(X_train, Y_train, X_test,100)
+        forest_accuracy_score.append(accuracy(forest_predict,Y_test))
+
+        logistic = methods.LogisticRegression()
+        logistic_predict = logistic.weighting(X_train, Y_train, X_test)
+        logistic_accuracy_score.append(accuracy(logistic_predict,Y_test))
+
+        fisher_predict = methods.fishers_LDA(X_train, Y_train, X_test)
+        fisher_accuracy_score.append(accuracy(fisher_predict,Y_test))
+
     # plotting routine
-    plt.plot(size, accuracy_score,label=model)
-    plt.xlabel("Training sample")
+    plt.figure()
+    plt.plot(size, KNN_accuracy_score,label="KNN")
+    plt.plot(size, forest_accuracy_score,label="Random Forest")
+    plt.plot(size, logistic_accuracy_score,label="Logistic")
+    plt.plot(size, fisher_accuracy_score,label="Fishers LDA")
+    plt.xlabel("Training sample proportion")
     plt.ylabel("Accuracy")
     plt.title("Accuracy vs Training Sample")
+    plt.legend()
 
 # Precision of the predictions
 def precision(cm):
@@ -256,22 +260,22 @@ def model_timing(X_train, Y_train, X_test):
     start_time = time.time()
     logistic = methods.LogisticRegression()
     logistic_prediction = logistic.weighting(X_train, Y_train, X_test)
-    print("Logistic Regression:","--- %s seconds ---" % (time.time() - start_time))
+    print("Logistic Regression:","--- %s seconds ---" % round((time.time() - start_time), 4))
 
     # knn model time
     start_time = time.time()
     knn_prediction = methods.KNN_predict(X_train, Y_train, X_test,30)
-    print("KNN:","--- %s seconds ---" % (time.time() - start_time))
+    print("KNN:","--- %s seconds ---" % round((time.time() - start_time), 4))
 
     # random forest model time
     start_time = time.time()
     forest_prediction = methods.randomForest(X_train, Y_train, X_test,n_estimators=100)
-    print("Forest:","--- %s seconds ---" % (time.time() - start_time))
+    print("Forest:","--- %s seconds ---" % round((time.time() - start_time), 4))
 
     # Fisher's LDA model time
     start_time = time.time()
     fisher_prediction = methods.fishers_LDA(X_train, Y_train, X_test)
-    print("LDA:","--- %s seconds ---" % (time.time() - start_time))
+    print("LDA:","--- %s seconds ---" % round((time.time() - start_time), 4))
 
 # KNN threshold 
 def KNN_threshold(X_train, Y_train, x, threshold=0.5):

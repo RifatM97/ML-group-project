@@ -5,6 +5,7 @@ import pandas as pd
 import matplotlib.pyplot as plt
 import scipy
 import math
+from sklearn.discriminant_analysis import LinearDiscriminantAnalysis
 
 # Random Forest Classifier - class membership prediction
 def randomForest(x_train, y_train, x_test, n_estimators):
@@ -59,7 +60,7 @@ def KNN_prob(x_train, y_train, test, K):
     return prediction
 
 # Fisher's LDA  
-def fishers_LDA(x_train, y_train, x_test):
+def fishers_LDA(x_train, y_train, x_test, plot_hist = "no"):
     # separate target by classes
     inputs0 = []
     inputs1 = []
@@ -94,26 +95,22 @@ def fishers_LDA(x_train, y_train, x_test):
         w_norm = -w_norm
     #apply the weights to the training data
     projected_inputs_train = project_data(x_train, w_norm)
-    # In case the classes are not integers, this is a simple encoding from class to integer.
-    N = x_train.shape[0]
-    targets_train = np.empty(N)
-    #we assume there are only 2 classes in the target variable
-    # get the class values as a pandas Series object
-    # class_values = y_train['Survived']
-    # classes = class_values.unique()
-    #TODO data is coming in as numpy arrays not dataframes so these lines don't work
-    class_values = y_train
-    classes = np.unique(class_values)
-    for class_id, class_name in enumerate(classes):
-        is_class = (class_values == class_name)
-        targets_train[is_class] = class_id
-
-    # ax_train = plot_class_histograms(projected_inputs_train, targets_train)
-    # # label x axis
-    # ax_train.set_xlabel(r"$\mathbf{w}^T\mathbf{x}$")
-    # ax_train.set_title("Projected Data: %s" % "fisher")
-    # ax_train.legend(classes)
-    
+    if plot_hist == "yes":
+        # In case the classes are not integers, this is a simple encoding from class to integer.
+        N = x_train.shape[0]
+        targets_train = np.empty(N)
+        #we assume there are only 2 classes in the target variable
+        # get the class values as a pandas Series object
+        class_values = y_train
+        classes = np.unique(class_values)
+        for class_id, class_name in enumerate(classes):
+            is_class = (class_values == class_name)
+            targets_train[is_class] = class_id
+        ax_train = plot_class_histograms(projected_inputs_train, targets_train)
+        # # label x axis
+        ax_train.set_xlabel(r"$\mathbf{w}^T\mathbf{x}$")
+        ax_train.set_ylabel("Density")
+        ax_train.legend(classes)   
     # To calculate threshold for prediction we need the mean and variance for the 
     # separate classes in the training data
     projected_inputs0 = project_data(inputs0, w)
@@ -136,8 +133,7 @@ def fishers_LDA(x_train, y_train, x_test):
       if prob_c0 >= prob_c1:
         y_pred[i] = 0
       else:
-        y_pred[i] = 1
-    
+        y_pred[i] = 1   
     return np.array(y_pred)
 
 
