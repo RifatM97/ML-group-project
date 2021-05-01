@@ -7,6 +7,7 @@ import matplotlib.pyplot as plt
 import preprocessing as prep
 import methods
 import random2
+import statistics as stats
 
 # Partitioning the input data into Train-Validation-Testing sets
 
@@ -43,42 +44,6 @@ def accuracy_v_param(X_train,Y_train,X_test,Y_test):
     plt.xlabel("K")
     plt.ylabel("Accuracy")
     plt.title("Accuracy vs number of K neighbours")
-
-# Accuracy vs Training sample size
-def accuracy_v_sample(x,y):
-    """Function plots the accuracy against the sample size of different models. The inputs is the chosen 
-    model. The output is the plot"""
-    size = np.arange(0.11,0.9,0.1)
-    KNN_accuracy_score = []
-    forest_accuracy_score = []
-    logistic_accuracy_score = []
-    fisher_accuracy_score = []
-    for i in size:
-        X_train, Y_train, X_valid, Y_valid, X_test, Y_test=prep.partition(x,y,train_portion=i)
-     
-        KNN_predict = methods.KNN_predict(X_train, Y_train, X_test, 30)
-        KNN_accuracy_score.append(accuracy(KNN_predict,Y_test))
-
-        forest_predict = methods.randomForest(X_train, Y_train, X_test,100)
-        forest_accuracy_score.append(accuracy(forest_predict,Y_test))
-
-        logistic = methods.LogisticRegression()
-        logistic_predict = logistic.weighting(X_train, Y_train, X_test)
-        logistic_accuracy_score.append(accuracy(logistic_predict,Y_test))
-
-        fisher_predict = methods.fishers_LDA(X_train, Y_train, X_test)
-        fisher_accuracy_score.append(accuracy(fisher_predict,Y_test))
-
-    # plotting routine
-    plt.figure()
-    plt.plot(size, KNN_accuracy_score,label="KNN")
-    plt.plot(size, forest_accuracy_score,label="Random Forest")
-    plt.plot(size, logistic_accuracy_score,label="Logistic")
-    plt.plot(size, fisher_accuracy_score,label="Fishers LDA")
-    plt.xlabel("Training sample proportion")
-    plt.ylabel("Accuracy")
-    plt.title("Accuracy vs Training Sample")
-    plt.legend()
 
 # Precision of the predictions
 def precision(cm):
@@ -163,7 +128,7 @@ def misclassification_error(targets, predicts):
 ### K-fold cross validation function
 
 def cross_validation_split(dataset, folds):
-    """Function splits the data in chosen folds. The output is splitted data"""
+    """Function splits the data in chosen folds. The output is split data"""
 
     dataset_split = []
     df_copy = dataset
@@ -175,6 +140,7 @@ def cross_validation_split(dataset, folds):
         # while loop to add elements to the folds
         while len(fold) < fold_size:
             # select a random element
+            random2.seed(40)   # same seed for consistent workflow
             r = random2.randrange(df_copy.shape[0])
             # determine the index of this element 
             index = df_copy.index[r]
@@ -188,7 +154,7 @@ def cross_validation_split(dataset, folds):
         
     return dataset_split 
     
-def kfoldCV(dataset, f=5, k=30, n_estimators=100, model="knn"):
+def kfoldCV(dataset, f=5, k=30, n_estimators=100, model="knn", print_result="no"):
     """Function runs chosen model into each fold and tests the model on different 
     sections. Inputs is the chosen dataset, number of folds, model name and model parameters.
     The output is an array of accuracy values for each fold."""
@@ -206,7 +172,6 @@ def kfoldCV(dataset, f=5, k=30, n_estimators=100, model="knn"):
                 cv=np.concatenate((cv,data[j]), axis=0)
         
         # apply the selected model
-        # default is logistic regression
         if model == "logistic":
             logistic = methods.LogisticRegression()
             test = logistic.weighting(cv[:,0:4],cv[:,4],data[i][:,0:4])
@@ -220,144 +185,9 @@ def kfoldCV(dataset, f=5, k=30, n_estimators=100, model="knn"):
         # calculate accuracy    
         acc=(test == data[i][:,4]).sum()
         result.append(acc/len(test))
-        
+    if print_result == "yes":
+        print("Result from each K fold CV:", result)
+        print("Mean of:", stats.mean(result))
+        print("Standard deviation:", stats.stdev(result))
     return result
-
-# Accuracy vs Folds
-def accuracy_v_fold(x,model="knn"):
-    """Function takes a chosen model to plot an accuracy vs number of folds plot. The accuracies are
-    the average values for the all the accuracies from each fold."""
-
-    cross_vals = []
-    folds = np.arange(2,20)
-    for i in folds:
-        
-        if model == "logistic":
-            cv_val = kfoldCV(x, f=i, k=5, model="logistic")
-            cross_vals.append(mean(cv_val))
-        elif model == "knn":
-            cv_val = kfoldCV(x, f=i, k=30, model="knn")
-            cross_vals.append(mean(cv_val))
-        elif model == "forest":
-            cv_val = kfoldCV(x, f=i, k=5, model="forest")
-            cross_vals.append(mean(cv_val))
-        elif model == "fisher":
-            cv_val = kfoldCV(x, f=i, k=5, model="fisher")
-            cross_vals.append(mean(cv_val))
-            
-    # plotting routine
-    plt.plot(folds, cross_vals, label=model)
-    plt.xlabel("Folds")
-    plt.ylabel("Accuracy")
-    plt.title("Accuracy vs K-folds")
-
-# Model timing 
-def model_timing(X_train, Y_train, X_test):
-    """Time taken for each model to train on training data and predict on testing data"""
-    import time
-    
-    # logistic regression time
-    start_time = time.time()
-    logistic = methods.LogisticRegression()
-    logistic_prediction = logistic.weighting(X_train, Y_train, X_test)
-    print("Logistic Regression:","--- %s seconds ---" % round((time.time() - start_time), 4))
-
-    # knn model time
-    start_time = time.time()
-    knn_prediction = methods.KNN_predict(X_train, Y_train, X_test,30)
-    print("KNN:","--- %s seconds ---" % round((time.time() - start_time), 4))
-
-    # random forest model time
-    start_time = time.time()
-    forest_prediction = methods.randomForest(X_train, Y_train, X_test,n_estimators=100)
-    print("Forest:","--- %s seconds ---" % round((time.time() - start_time), 4))
-
-    # Fisher's LDA model time
-    start_time = time.time()
-    fisher_prediction = methods.fishers_LDA(X_train, Y_train, X_test)
-    print("LDA:","--- %s seconds ---" % round((time.time() - start_time), 4))
-
-# KNN threshold 
-def KNN_threshold(X_train, Y_train, x, threshold=0.5):
-    """Function uses threshold input for model prediction"""
-
-    y_probs = methods.KNN_prob(X_train, Y_train, x, 30)
-    predictions = y_probs >= threshold
-    return np.multiply(predictions[:,1],1)
-
-# Forest threshold 
-def forest_threshold(X_train, Y_train, x, threshold=0.5):
-    """Function uses threshold input for model prediction"""
-
-    y_probs = methods.randomForest_prob(X_train,Y_train, x, 100)
-    predictions = y_probs >= threshold
-    return np.multiply(predictions[:,1],1)
-    
-# Calculate the recall and false positive rate for threshold options
-def get_roc(X_train, Y_train, x, y,model="knn"):
-    tpr = []
-    fpr = []
-    # Define decision thresholds between 0-1
-    thresholds = np.linspace(0,1, 400)
-    for threshold in thresholds:
-
-        if model == "knn":
-            Y_predict = KNN_threshold(X_train, Y_train, x,threshold=threshold)
-            cm = confusion_matrix(Y_predict, y)
-            tpr.append(recall(cm))
-            fpr.append(false_positive_ratio(cm))
-
-        elif model == "forest":
-             Y_predict = forest_threshold(X_train, Y_train, x,threshold=threshold)
-             cm = confusion_matrix(Y_predict, y)
-             tpr.append(recall(cm))
-             fpr.append(false_positive_ratio(cm))
-            
-        elif model == "logistic":
-            logistic = methods.LogisticRegression()
-            Y_predict = logistic.weighting(X_train, Y_train, x, threshold=threshold)
-            cm = confusion_matrix(Y_predict, y)
-            tpr.append(recall(cm))
-            fpr.append(false_positive_ratio(cm))
-        
-        elif model == "fisher":
-             Y_predict = fisher_threshold(X_train, Y_train, x,threshold=threshold)
-             cm = confusion_matrix(Y_predict, y)
-             tpr.append(recall(cm))
-             fpr.append(false_positive_ratio(cm))
-            
-    return fpr, tpr
-  
-# Cutoff point of the best threshold by maximising the true positive rate and minimising the false positive rate
-def get_cutoff(fpr, tpr):
-    # Define decision thresholds between 0-1
-    thresholds = np.linspace(0,1, 400)
-    optimal_idx = np.argmax(np.array(tpr) - np.array(fpr))
-    optimal_threshold = thresholds[optimal_idx]
-    return optimal_idx, optimal_threshold
-
-def ROC_curves(X_train, Y_train, X_valid, Y_valid, X_test, Y_test,model="forest"):
-    """ROC curves for each model"""
-
-    train_roc = get_roc(X_train, Y_train, X_train, Y_train,model)
-    valid_roc = get_roc(X_train, Y_train, X_valid, Y_valid,model)
-    test_roc = get_roc(X_train, Y_train, X_test, Y_test,model)
-
-    train_cutoff = get_cutoff(train_roc[0], train_roc[1])   
-    valid_cutoff = get_cutoff(valid_roc[0], valid_roc[1])
-    test_cutoff = get_cutoff(test_roc[0], test_roc[1])
-
-    plt.figure()
-    plt.plot(train_roc[0], train_roc[1], label="Train", c='r')
-    plt.plot(valid_roc[0], valid_roc[1], label="Valid", c='b')
-    plt.plot(test_roc[0], test_roc[1], label="Test", c='g', linestyle='dashed')
-
-    plt.scatter(train_roc[0][train_cutoff[0]], train_roc[1][train_cutoff[0]], label="Train cutoff: {}".format(train_cutoff[1]), c='r')
-    plt.scatter(valid_roc[0][valid_cutoff[0]], valid_roc[1][valid_cutoff[0]], label="Valid cutoff: {}".format(valid_cutoff[1]), c='b')
-    plt.scatter(test_roc[0][test_cutoff[0]], test_roc[1][test_cutoff[0]], label="Test cutoff: {}".format(test_cutoff[1]), c='g', linestyle='dashed')
-    plt.title(model)
-    plt.xlabel("Precision")
-    plt.ylabel("Recall")
-    plt.legend()
-
-
+ 
