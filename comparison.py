@@ -8,6 +8,7 @@ from statistics import mean
 
 
 def model_performance(model_prediction, Y_test, runtime):
+    """This function prints a number of performance metrics to the console using the prediction made by the model"""
     print("Accuracy:",round(eval.accuracy(model_prediction,Y_test), 4))
     print("Expected loss:",round(eval.expected_loss(Y_test,model_prediction,eval.confusion_matrix(model_prediction,Y_test)), 4))
     print("Misclassification error:", round(eval.misclassification_error(Y_test,model_prediction), 4))
@@ -17,6 +18,7 @@ def model_performance(model_prediction, Y_test, runtime):
 
 
 def plot_cm_comparison(forest_prediction, knn_prediction, fisher_prediction, logistic_prediction, Y_test):
+    """This function plots a confusion matrix for all four models"""
     fig, axs = plt.subplots(2, 2)
     fig.suptitle('Confusion matrices')
     sns.heatmap(eval.confusion_matrix(forest_prediction, Y_test), annot=True, ax=axs[0, 0], xticklabels=False)
@@ -32,8 +34,9 @@ def plot_cm_comparison(forest_prediction, knn_prediction, fisher_prediction, log
     
 # Accuracy vs Training sample size
 def metric_v_sample(x,y):
-    """Function plots the accuracy against the sample size of different models. The inputs is the chosen 
-    model. The output is the plot"""
+    """Function plots the accuracy and expected loss against the sample size of different models. 
+    The inputs is the data. 
+    The output is the plots"""
     size = np.arange(0.11,0.9,0.1)
     KNN_accuracy_score = []
     KNN_loss = []
@@ -98,21 +101,21 @@ def accuracy_v_fold(x):
     forest_cross_vals = []
     fisher_cross_vals = []
     folds = np.arange(2, 10, 2)
-    for i in folds:       
-        logistic_cv_val = eval.kfoldCV(x, f=i, model="logistic")
-        logistic_cross_vals.append(mean(logistic_cv_val))
+    for i in folds:
         knn_cv_val = eval.kfoldCV(x, f=i, k=30, model="knn")
-        knn_cross_vals.append(mean(knn_cv_val))
+        knn_cross_vals.append(mean(knn_cv_val))   
         forest_cv_val = eval.kfoldCV(x, f=i, n_estimators=100, model="forest")
         forest_cross_vals.append(mean(forest_cv_val))
+        logistic_cv_val = eval.kfoldCV(x, f=i, model="logistic")
+        logistic_cross_vals.append(mean(logistic_cv_val))
         fisher_cv_val = eval.kfoldCV(x, f=i, model="fisher")
         fisher_cross_vals.append(mean(fisher_cv_val))
             
     # plotting routine
     plt.figure()
-    plt.plot(folds, logistic_cross_vals, label="Logistic Regression")
     plt.plot(folds, knn_cross_vals, label="KNN")
     plt.plot(folds, forest_cross_vals, label="Random Forest")
+    plt.plot(folds, logistic_cross_vals, label="Logistic Regression")
     plt.plot(folds, fisher_cross_vals, label="FishersLDA")
     plt.xlabel("Folds")
     plt.ylabel("Accuracy")

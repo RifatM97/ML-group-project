@@ -61,6 +61,8 @@ def KNN_prob(x_train, y_train, test, K):
 
 # Fisher's LDA  
 def fishers_LDA(x_train, y_train, x_test, plot_hist = False):
+    """This function trains the Fishers LDA model on the training set and predicts 
+        the probability of survival of the testing set"""
     # separate target by classes
     inputs0 = []
     inputs1 = []
@@ -99,9 +101,9 @@ def fishers_LDA(x_train, y_train, x_test, plot_hist = False):
         projected_inputs0 = project_data(inputs0, w_norm) 
         projected_inputs1 = project_data(inputs1, w_norm) 
         plt.figure(figsize=(10,8))
-        plt.hist(projected_inputs0, alpha=0.5, label='Survived = 0')
-        plt.hist(projected_inputs1, alpha=0.5, label='Survived = 1') 
-        plt.xlabel(r"$\mathbf{w}^T\mathbf{x}$")
+        plt.hist(projected_inputs0, bins=20, alpha=0.5, label='Survived = 0')
+        plt.hist(projected_inputs1, bins=20, alpha=0.5, label='Survived = 1') 
+        plt.xlabel("Projected data")
         plt.ylabel("Density")
         plt.legend()  
         plt.savefig('plots\Fisher_separation.png')   
@@ -132,6 +134,8 @@ def fishers_LDA(x_train, y_train, x_test, plot_hist = False):
 
 
 def max_lik(data):
+    """Finds the maximum likelihood mean and covariance matrix for gaussian data
+    samples (data)"""
     N, dim = data.shape
     mu = np.mean(data, 0)
     Sigma = np.zeros((dim, dim))

@@ -5,16 +5,20 @@ import seaborn as sns
 
 
 def variable_info(data):
+    """ Print the data types of each variable to the console"""
     print(list(data.columns))
     for column in data.columns.values:
         print (column, "data type: ", type(data[column][1]))
 
 def plot_heatmap(data):
+    """Plot and save a heatmap of the correlation of each variable used in the data"""
     plt.figure(figsize=(10,8))
     sns.heatmap(data.corr(), annot=True)
     plt.savefig('plots\Correlation_heatmap.png')
 
 def plot_overlay_hist(data):
+    """Plot an overlay histogram of the survival of passengers for the Age and Fare 
+        variable separately"""
     survived = data[data.Survived==1]
     notsurvived = data[data.Survived==0]
 

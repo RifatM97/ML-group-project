@@ -21,12 +21,7 @@ def convert2onehot(df, *args):
         df = df.join(onehot)
     return df
 
-
-def fillagewithmean(df):
-    """Replace missing age values with the average"""
-    df['Age'] = df['Age'].fillna(value=df['Age'].mean())
-
-#Need to include link to this function in reference
+#TODO Need to include link to this function in reference
 def prep_fill_na_age(df, df_med):
     """Replace missing age values with the median of the PClass and SibSP"""
     for x in range(len(df)):
@@ -65,11 +60,13 @@ def prep_fill_na_age(df, df_med):
                 return df_med.loc[3]["Age"].median() 
 
 def fill_na_age(df):
+    """Set up and call function to replace missing age values 
+        with the median of the PClass and SibSP """
     df_med=df.groupby(["Pclass","SibSp"]).median()
     df["Age"]=df["Age"].fillna(prep_fill_na_age(df, df_med))
 
 def fillembarked3(df):
-    ## filling with the most common
+    """Filling missing values for Embarked column with the most common result"""
     df['Embarked'] = df['Embarked'].fillna(value='S')  
 
 
@@ -124,22 +121,3 @@ def partition(x, y, train_portion=None):
 
     return X_train, Y_train, X_valid, Y_valid, X_test, Y_test
 
-#def main():
-#    """This section is for testing the preprocessing, will be run if you run this file only"""
-#    pd.set_option('display.max_columns', None)
-
-#    train = import2df('data/train.csv')
-#    print(train.to_string())
-#    print(train.isna().sum())
-
- #   sex2binary(train)
- #   fillagewithmean(train)
- #   fillembarked3(train)
- #   train = extractTitles(train)
- #   print(train)
- #   train = convert2onehot(train, 'Sex', 'Embarked', 'Title')
- #   print(train)
-
-
-#if __name__ == "__main__":
-#    main()

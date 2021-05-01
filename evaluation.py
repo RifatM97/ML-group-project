@@ -32,10 +32,11 @@ def confusion_matrix(Y_predict, Y):
     return cm
 
 def accuracy_v_param(X_train,Y_train,X_test,Y_test):
-
+    """This function plots the accuracy of the KNN model prediction against the 
+        number of K-neighbors to identify optimum K"""
     K_values = np.arange(1,51)
     accuracy_score = []
-    for k in K_values: # from K=1 to K=20
+    for k in K_values: # from K=1 to K=50
         y_predict = methods.KNN_predict(X_train, Y_train, X_test, k)
         accuracy_score.append(accuracy(y_predict,Y_test))
         
