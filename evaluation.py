@@ -44,44 +44,7 @@ def accuracy_v_param(X_train,Y_train,X_test,Y_test):
     plt.xlabel("K")
     plt.ylabel("Accuracy")
     plt.title("Accuracy vs number of K neighbours")
-
-# expected loss vs Training sample size
-def loss_v_sample(x,y):
-    """Function plots the expected loss against the sample size of different models. The inputs is the data.
-     The output is the plot"""
-
-    size = np.arange(0.11,0.9,0.1)
-    KNN_accuracy_score = []
-    forest_accuracy_score = []
-    logistic_accuracy_score = []
-    fisher_accuracy_score = []
-    for i in size:
-        X_train, Y_train, X_valid, Y_valid, X_test, Y_test=prep.partition(x,y,train_portion=i)
-     
-        KNN_predict = methods.KNN_predict(X_train, Y_train, X_test, 30)
-        KNN_accuracy_score.append(expected_loss(Y_test, KNN_predict, confusion_matrix(KNN_predict, Y_test)))
-
-        forest_predict = methods.randomForest(X_train, Y_train, X_test,100)
-        forest_accuracy_score.append(expected_loss(Y_test, forest_predict, confusion_matrix(forest_predict, Y_test)))
-
-        logistic = methods.LogisticRegression()
-        logistic_predict = logistic.weighting(X_train, Y_train, X_test)
-        logistic_accuracy_score.append(expected_loss(Y_test, logistic_predict, confusion_matrix(logistic_predict, Y_test)))
-
-        fisher_predict = methods.fishers_LDA(X_train, Y_train, X_test)
-        fisher_accuracy_score.append(expected_loss(Y_test, fisher_predict, confusion_matrix(fisher_predict, Y_test)))
-
-    # plotting routine
-    plt.figure()
-    plt.plot(size, KNN_accuracy_score,label="KNN")
-    plt.plot(size, forest_accuracy_score,label="Random Forest")
-    plt.plot(size, logistic_accuracy_score,label="Logistic")
-    plt.plot(size, fisher_accuracy_score,label="Fishers LDA")
-    plt.xlabel("Training sample proportion")
-    plt.ylabel("Expected Loss")
-    plt.title("Expected Loss vs Training Sample")
-    plt.legend()
-
+    plt.savefig('plots\KNN_accuracy_v_K.png')
 
 
 # Precision of the predictions
@@ -193,7 +156,7 @@ def cross_validation_split(dataset, folds):
         
     return dataset_split 
     
-def kfoldCV(dataset, f=5, k=30, n_estimators=100, model="knn", print_result="no"):
+def kfoldCV(dataset, f=5, k=30, n_estimators=100, model="knn", print_result=False):
     """Function runs chosen model into each fold and tests the model on different 
     sections. Inputs is the chosen dataset, number of folds, model name and model parameters.
     The output is an array of accuracy values for each fold."""
@@ -224,7 +187,7 @@ def kfoldCV(dataset, f=5, k=30, n_estimators=100, model="knn", print_result="no"
         # calculate accuracy    
         acc=(test == data[i][:,4]).sum()
         result.append(acc/len(test))
-    if print_result == "yes":
+    if print_result == True:
         print("Result from each K fold CV:", result)
         print("Mean of:", stats.mean(result))
         print("Standard deviation:", stats.stdev(result))

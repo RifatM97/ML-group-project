@@ -60,7 +60,7 @@ def KNN_prob(x_train, y_train, test, K):
     return prediction
 
 # Fisher's LDA  
-def fishers_LDA(x_train, y_train, x_test, plot_hist = "no"):
+def fishers_LDA(x_train, y_train, x_test, plot_hist = False):
     # separate target by classes
     inputs0 = []
     inputs1 = []
@@ -95,22 +95,16 @@ def fishers_LDA(x_train, y_train, x_test, plot_hist = "no"):
         w_norm = -w_norm
     #apply the weights to the training data
     projected_inputs_train = project_data(x_train, w_norm)
-    if plot_hist == "yes":
-        # In case the classes are not integers, this is a simple encoding from class to integer.
-        N = x_train.shape[0]
-        targets_train = np.empty(N)
-        #we assume there are only 2 classes in the target variable
-        # get the class values as a pandas Series object
-        class_values = y_train
-        classes = np.unique(class_values)
-        for class_id, class_name in enumerate(classes):
-            is_class = (class_values == class_name)
-            targets_train[is_class] = class_id
-        ax_train = plot_class_histograms(projected_inputs_train, targets_train)
-        # # label x axis
-        ax_train.set_xlabel(r"$\mathbf{w}^T\mathbf{x}$")
-        ax_train.set_ylabel("Density")
-        ax_train.legend(classes)   
+    if plot_hist == True:
+        projected_inputs0 = project_data(inputs0, w_norm) 
+        projected_inputs1 = project_data(inputs1, w_norm) 
+        plt.figure(figsize=(10,8))
+        plt.hist(projected_inputs0, alpha=0.5, label='Survived = 0')
+        plt.hist(projected_inputs1, alpha=0.5, label='Survived = 1') 
+        plt.xlabel(r"$\mathbf{w}^T\mathbf{x}$")
+        plt.ylabel("Density")
+        plt.legend()  
+        plt.savefig('plots\Fisher_separation.png')   
     # To calculate threshold for prediction we need the mean and variance for the 
     # separate classes in the training data
     projected_inputs0 = project_data(inputs0, w)
@@ -152,7 +146,7 @@ def max_lik(data):
         # a (k x k)-matrix as output. This is added to the running total.
         Sigma += x_minus_mu * x_minus_mu.T
     # Sigma is unnormalised, so we divide by the number of datapoints
-    Sigma /= N
+    #Sigma /= N
     # we convert Sigma matrix back to an array to avoid confusion later
     return mu, np.asarray(Sigma), N
 
@@ -174,35 +168,6 @@ def project_data(data, weights):
     weights = np.matrix(weights).reshape((D,1))
     projected_data = np.array(data*weights).flatten()
     return projected_data
-
-def plot_class_histograms(
-        inputs, class_assignments, bins=20, colors=None, ax=None):
-    """
-    Plots histograms of 1d input data, split according to class
-
-    parameters
-    ----------
-    inputs - 1d vector of input values (array-like)
-    class_assignments - 1d vector of class values as integers (array-like)
-    colors (optional) - a vector of colors one per class
-    ax (optional) - pass in an existing axes object (otherwise one will be
-        created)
-    """
-    class_ids = np.unique(class_assignments)
-    num_classes = len(class_ids)
-    # calculate a good division of bins for the whole data-set
-    _, bins = np.histogram(inputs, bins=bins)
-    # create an axes object if needed
-    if ax is None:
-        fig = plt.figure()
-        ax = fig.add_subplot(1,1,1)
-    # plot histograms
-    for i, class_id in enumerate(class_ids):
-        class_inputs = inputs[class_assignments==class_id]
-     #   ax.hist(class_inputs, bins=bins, color=colors[i], alpha=0.6)
-        ax.hist(class_inputs, bins=bins, alpha=0.6)
-    #print("class_ids = %r" % (class_ids,))
-    return ax
 
 # Creating a classifier for Logistic Regression
 # This method uses stochastic gradient descent

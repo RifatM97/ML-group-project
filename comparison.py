@@ -27,35 +27,43 @@ def plot_cm_comparison(forest_prediction, knn_prediction, fisher_prediction, log
     axs[1, 0].set_title('Fishers LDA')
     sns.heatmap(eval.confusion_matrix(logistic_prediction, Y_test), annot=True, ax=axs[1, 1], yticklabels=False)
     axs[1, 1].set_title('Logistic Regression')
-    plt.show()
+    plt.savefig('plots\confusion_matices.png')
 
     
 # Accuracy vs Training sample size
-def accuracy_v_sample(x,y):
+def metric_v_sample(x,y):
     """Function plots the accuracy against the sample size of different models. The inputs is the chosen 
     model. The output is the plot"""
     size = np.arange(0.11,0.9,0.1)
     KNN_accuracy_score = []
+    KNN_loss = []
     forest_accuracy_score = []
+    forest_loss = []
     logistic_accuracy_score = []
+    logistic_loss = []
     fisher_accuracy_score = []
+    fisher_loss = []
     for i in size:
         X_train, Y_train, X_valid, Y_valid, X_test, Y_test=prep.partition(x,y,train_portion=i)
      
         KNN_predict = methods.KNN_predict(X_train, Y_train, X_test, 30)
         KNN_accuracy_score.append(eval.accuracy(KNN_predict,Y_test))
+        KNN_loss.append(eval.expected_loss(Y_test, KNN_predict, eval.confusion_matrix(KNN_predict, Y_test)))
 
         forest_predict = methods.randomForest(X_train, Y_train, X_test,100)
         forest_accuracy_score.append(eval.accuracy(forest_predict,Y_test))
+        forest_loss.append(eval.expected_loss(Y_test, forest_predict, eval.confusion_matrix(forest_predict, Y_test)))
 
         logistic = methods.LogisticRegression()
         logistic_predict = logistic.weighting(X_train, Y_train, X_test)
         logistic_accuracy_score.append(eval.accuracy(logistic_predict,Y_test))
+        logistic_loss.append(eval.expected_loss(Y_test, logistic_predict, eval.confusion_matrix(logistic_predict, Y_test)))
 
         fisher_predict = methods.fishers_LDA(X_train, Y_train, X_test)
         fisher_accuracy_score.append(eval.accuracy(fisher_predict,Y_test))
+        fisher_loss.append(eval.expected_loss(Y_test, fisher_predict, eval.confusion_matrix(fisher_predict, Y_test)))
 
-    # plotting routine
+    #Plot accuracy vs training sample
     plt.figure()
     plt.plot(size, KNN_accuracy_score, label="KNN")
     plt.plot(size, forest_accuracy_score, label="Random Forest")
@@ -65,9 +73,22 @@ def accuracy_v_sample(x,y):
     plt.ylabel("Accuracy")
     plt.title("Accuracy vs Training Sample")
     plt.legend()
+    plt.savefig('plots\Accuracy_v_trainingsample.png')
+
+    #Plot Expected loss vs training sample
+    plt.figure()
+    plt.plot(size, KNN_loss,label="KNN")
+    plt.plot(size, forest_loss,label="Random Forest")
+    plt.plot(size, logistic_loss,label="Logistic")
+    plt.plot(size, fisher_loss,label="Fishers LDA")
+    plt.xlabel("Training sample proportion")
+    plt.ylabel("Expected Loss")
+    plt.title("Expected Loss vs Training Sample")
+    plt.legend()
+    plt.savefig('plots\Exp_loss_v_trainingsample.png')
 
 
-    # Accuracy vs Folds
+# Accuracy vs Folds
 def accuracy_v_fold(x):
     """Function takes a chosen model to plot an accuracy vs number of folds plot. The accuracies are
     the average values for the all the accuracies from each fold."""
@@ -97,4 +118,4 @@ def accuracy_v_fold(x):
     plt.ylabel("Accuracy")
     plt.title("Accuracy vs K-folds")
     plt.legend()
-    plt.show()
+    plt.savefig('plots\Accuracy_v_kfolds.png')

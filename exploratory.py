@@ -12,6 +12,7 @@ def variable_info(data):
 def plot_heatmap(data):
     plt.figure(figsize=(10,8))
     sns.heatmap(data.corr(), annot=True)
+    plt.savefig('plots\Correlation_heatmap.png')
 
 def plot_overlay_hist(data):
     survived = data[data.Survived==1]
@@ -24,6 +25,7 @@ def plot_overlay_hist(data):
     plt.legend(loc='upper right')
     plt.xlabel("Age")
     plt.ylabel("Count")
+    plt.savefig('plots\Histogram_age_by_survival.png')
 
     bins = np.linspace(0, 250, 25)
     plt.figure(figsize=(10,8))
@@ -32,4 +34,4 @@ def plot_overlay_hist(data):
     plt.legend(loc='upper right')
     plt.xlabel("Fare")
     plt.ylabel("Count")
-    plt.show()
+    plt.savefig('plots\Histogram_Fare_by_survival.png')
