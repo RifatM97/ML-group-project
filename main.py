@@ -39,7 +39,7 @@ def main():
 
     # set cmd panda view and import data
     pd.set_option('display.max_columns', None)
-    alldata = prep.import2df('data/train.csv')
+    alldata = prep.import2df(r'C:\Users\user\ML-group-project.git\ML-group-project\data\train.csv')
 
     # fill in missing data and convert categories to one hot
     alldata, alldata_discrete = preprocessing(alldata)
@@ -53,7 +53,7 @@ def main():
     X_train, Y_train, X_valid, Y_valid, X_test, Y_test = prep.partition(x, y)
     
     # Checking KNN vs number of K-neighbors to identify optimum K 
-    #eval.accuracy_v_param(X_train,Y_train,X_test,Y_test)
+    eval.accuracy_v_param(X_train,Y_train,X_test,Y_test)
 
     # Running the KNN model
     knn_prediction = methods.KNN_predict(X_train, Y_train, X_test, 30)
@@ -80,6 +80,10 @@ def main():
     # # Model accuracies vs % Training Sample
     eval.accuracy_v_sample(x,y)
     plt.show()
+
+    # # Model accuracies vs % Training Sample
+    eval.loss_v_sample(x,y)
+    plt.show()
     
     # # Confusion matrices
     # TODO Currently the scale is not the same on all 4 plots. 
@@ -103,12 +107,13 @@ def main():
     eval.model_timing(X_train,Y_train,X_test)
 
     # # K-Fold mean accuracy vs number of folds
-    #plt.figure()
-    #eval.accuracy_v_fold(alldata, model="knn")
-    #eval.accuracy_v_fold(alldata, model="forest")
-    #eval.accuracy_v_fold(alldata, model="logistic")
-    #eval.accuracy_v_fold(alldata, model="fisher")
-    #plt.legend()
+    plt.figure()
+    # eval.accuracy_v_fold(alldata, model="knn")
+    # eval.accuracy_v_fold(alldata, model="forest")
+    # eval.accuracy_v_fold(alldata, model="logistic")
+    # eval.accuracy_v_fold(alldata, model="fisher")
+    plt.legend()
+    plt.show()
 
     ### TODO WE SHOULD SAVE ALL THE FIGURES IN ONE FILE ###
 

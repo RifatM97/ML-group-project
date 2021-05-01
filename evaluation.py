@@ -46,8 +46,8 @@ def accuracy_v_param(X_train,Y_train,X_test,Y_test):
 
 # Accuracy vs Training sample size
 def accuracy_v_sample(x,y):
-    """Function plots the accuracy against the sample size of different models. The inputs is the chosen 
-    model. The output is the plot"""
+    """Function plots the accuracy against the sample size of different models. The inputs is the data. 
+    The output is the plot"""
     size = np.arange(0.11,0.9,0.1)
     KNN_accuracy_score = []
     forest_accuracy_score = []
@@ -79,6 +79,45 @@ def accuracy_v_sample(x,y):
     plt.ylabel("Accuracy")
     plt.title("Accuracy vs Training Sample")
     plt.legend()
+
+# expected loss vs Training sample size
+def loss_v_sample(x,y):
+    """Function plots the expected loss against the sample size of different models. The inputs is the data.
+     The output is the plot"""
+
+    size = np.arange(0.11,0.9,0.1)
+    KNN_accuracy_score = []
+    forest_accuracy_score = []
+    logistic_accuracy_score = []
+    fisher_accuracy_score = []
+    for i in size:
+        X_train, Y_train, X_valid, Y_valid, X_test, Y_test=prep.partition(x,y,train_portion=i)
+     
+        KNN_predict = methods.KNN_predict(X_train, Y_train, X_test, 30)
+        KNN_accuracy_score.append(expected_loss(Y_test, KNN_predict, confusion_matrix(KNN_predict, Y_test)))
+
+        forest_predict = methods.randomForest(X_train, Y_train, X_test,100)
+        forest_accuracy_score.append(expected_loss(Y_test, forest_predict, confusion_matrix(forest_predict, Y_test)))
+
+        logistic = methods.LogisticRegression()
+        logistic_predict = logistic.weighting(X_train, Y_train, X_test)
+        logistic_accuracy_score.append(expected_loss(Y_test, logistic_predict, confusion_matrix(logistic_predict, Y_test)))
+
+        fisher_predict = methods.fishers_LDA(X_train, Y_train, X_test)
+        fisher_accuracy_score.append(expected_loss(Y_test, fisher_predict, confusion_matrix(fisher_predict, Y_test)))
+
+    # plotting routine
+    plt.figure()
+    plt.plot(size, KNN_accuracy_score,label="KNN")
+    plt.plot(size, forest_accuracy_score,label="Random Forest")
+    plt.plot(size, logistic_accuracy_score,label="Logistic")
+    plt.plot(size, fisher_accuracy_score,label="Fishers LDA")
+    plt.xlabel("Training sample proportion")
+    plt.ylabel("Expected Loss")
+    plt.title("Expected Loss vs Training Sample")
+    plt.legend()
+
+
 
 # Precision of the predictions
 def precision(cm):
