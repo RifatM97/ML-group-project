@@ -33,7 +33,7 @@ def main():
 
     # set cmd panda view and import data
     pd.set_option('display.max_columns', None)
-    alldata = prep.import2df('data/train.csv')
+    alldata = prep.import2df(r'C:\Users\user\ML-group-project.git\ML-group-project\data\train.csv')
 
     # fill in missing data and convert categories to one hot
     alldata, alldata_discrete = preprocessing(alldata)
@@ -83,6 +83,10 @@ def main():
     #Takes aproximately 3 minutes to run
     #comp.accuracy_v_sample(x,y)
     #plt.show()
+
+    # # Model accuracies vs % Training Sample
+    eval.loss_v_sample(x,y)
+    plt.show()
     
     # # Confusion matrices
     # TODO Currently the scale is not the same on all 4 plots. 
