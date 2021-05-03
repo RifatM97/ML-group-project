@@ -10,8 +10,8 @@ from statistics import mean
 def model_performance(model_prediction, Y_test, runtime):
     """This function prints a number of performance metrics to the console using the prediction made by the model"""
     print("Accuracy:",round(eval.accuracy(model_prediction,Y_test), 4))
-    print("Expected loss:",round(eval.expected_loss(Y_test,model_prediction,eval.confusion_matrix(model_prediction,Y_test)), 4))
     print("Misclassification error:", round(eval.misclassification_error(Y_test,model_prediction), 4))
+    print("Expected loss:",round(eval.expected_loss(Y_test,model_prediction,eval.confusion_matrix(model_prediction,Y_test)), 4))
     print("True Positives:", round(eval.recall(eval.confusion_matrix(model_prediction,Y_test)), 4))
     print("False Negatives:", round(eval.false_positive_ratio(eval.confusion_matrix(model_prediction,Y_test)), 4))
     print("Model run time:","--- %s seconds ---" % round(runtime, 4))

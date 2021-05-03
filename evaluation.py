@@ -189,8 +189,9 @@ def kfoldCV(dataset, f=5, k=30, n_estimators=100, model="knn", print_result=Fals
         acc=(test == data[i][:,4]).sum()
         result.append(acc/len(test))
     if print_result == True:
-        print("Result from each K fold CV:", result)
-        print("Mean of:", stats.mean(result))
-        print("Standard deviation:", stats.stdev(result))
+        #print("Result from each K fold CV:", result)
+        print("------K fold CV------")
+        print("Mean accuracy:", round(stats.mean(result), 4))
+        print("Standard deviation:", round(stats.stdev(result), 4))
     return result
  

@@ -42,7 +42,7 @@ def main(ifname, knn=False, forest=False, logistic=False, fisher=False, model_co
     alldata, alldata_discrete = preprocessing(alldata)
 
     #Produce some exploratory plots of the data
-    #explore(alldata_discrete)
+    explore(alldata_discrete)
 
     # split 80:10:10 train-validation-test
     x = alldata.drop('Survived', axis=1)
@@ -92,15 +92,14 @@ def main(ifname, knn=False, forest=False, logistic=False, fisher=False, model_co
     if model_comparison == True:
         #Assess Accuracy and Expected loss against sample
         #Takes 2 minutes to run
-        #comp.metric_v_sample(x,y)
+        comp.metric_v_sample(x,y)
         
         # # Confusion matrices
-        # TODO Currently the scale is not the same on all 4 plots. This can be modified so that the colours correspond to the same values for all 4 plots
         comp.plot_cm_comparison(forest_prediction, knn_prediction, fisher_prediction, logistic_prediction, Y_test)
 
         # # K-Fold mean accuracy vs number of folds
         #This takes approximately 8 minutes 
-        #comp.accuracy_v_fold(alldata)
+        comp.accuracy_v_fold(alldata)
 
 
 if __name__ == "__main__":
