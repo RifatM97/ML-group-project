@@ -20,7 +20,7 @@ def model_performance(model_prediction, Y_test, runtime):
 def plot_cm_comparison(forest_prediction, knn_prediction, fisher_prediction, logistic_prediction, Y_test):
     """This function plots a confusion matrix for all four models"""
     fig, axs = plt.subplots(2, 2)
-    fig.suptitle('Confusion matrices')
+    #fig.suptitle('Confusion matrices')
     sns.heatmap(eval.confusion_matrix(forest_prediction, Y_test), annot=True, ax=axs[0, 0], xticklabels=False)
     axs[0, 0].set_title('Random Forest')
     sns.heatmap(eval.confusion_matrix(knn_prediction, Y_test), annot=True, ax=axs[0, 1], xticklabels=False)
@@ -29,7 +29,7 @@ def plot_cm_comparison(forest_prediction, knn_prediction, fisher_prediction, log
     axs[1, 0].set_title('Fishers LDA')
     sns.heatmap(eval.confusion_matrix(logistic_prediction, Y_test), annot=True, ax=axs[1, 1], yticklabels=False)
     axs[1, 1].set_title('Logistic Regression')
-    plt.savefig('plots\confusion_matices.png')
+    plt.savefig('plots\confusion_matrices.png')
 
     
 # Accuracy vs Training sample size
@@ -47,7 +47,7 @@ def metric_v_sample(x,y):
     fisher_accuracy_score = []
     fisher_loss = []
     for i in size:
-        X_train, Y_train, X_valid, Y_valid, X_test, Y_test=prep.partition(x,y,train_portion=i)
+        X_train, Y_train, X_test, Y_test=prep.partition(x,y,train_portion=i)
      
         KNN_predict = methods.KNN_predict(X_train, Y_train, X_test, 30)
         KNN_accuracy_score.append(eval.accuracy(KNN_predict,Y_test))
@@ -74,7 +74,7 @@ def metric_v_sample(x,y):
     plt.plot(size, fisher_accuracy_score, label="Fishers LDA")
     plt.xlabel("Training sample proportion")
     plt.ylabel("Accuracy")
-    plt.title("Accuracy vs Training Sample")
+    #plt.title("Accuracy vs Training Sample")
     plt.legend()
     plt.savefig('plots\Accuracy_v_trainingsample.png')
 
@@ -86,7 +86,7 @@ def metric_v_sample(x,y):
     plt.plot(size, fisher_loss,label="Fishers LDA")
     plt.xlabel("Training sample proportion")
     plt.ylabel("Expected Loss")
-    plt.title("Expected Loss vs Training Sample")
+    #plt.title("Expected Loss vs Training Sample")
     plt.legend()
     plt.savefig('plots\Exp_loss_v_trainingsample.png')
 
@@ -119,6 +119,6 @@ def accuracy_v_fold(x):
     plt.plot(folds, fisher_cross_vals, label="FishersLDA")
     plt.xlabel("Folds")
     plt.ylabel("Accuracy")
-    plt.title("Accuracy vs K-folds")
+    #plt.title("Accuracy vs K-folds")
     plt.legend()
     plt.savefig('plots\Accuracy_v_kfolds.png')

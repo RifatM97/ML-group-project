@@ -47,7 +47,7 @@ def main(ifname, knn=False, forest=False, logistic=False, fisher=False, model_co
     # split 80:10:10 train-validation-test
     x = alldata.drop('Survived', axis=1)
     y = alldata["Survived"]
-    X_train, Y_train, X_valid, Y_valid, X_test, Y_test = prep.partition(x, y)
+    X_train, Y_train, X_test, Y_test = prep.partition(x, y)
     
     if knn == True:
         # Checking KNN vs number of K-neighbors to identify optimum K 

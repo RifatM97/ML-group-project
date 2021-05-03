@@ -44,7 +44,7 @@ def accuracy_v_param(X_train,Y_train,X_test,Y_test):
     plt.plot(K_values, accuracy_score)
     plt.xlabel("K")
     plt.ylabel("Accuracy")
-    plt.title("Accuracy vs number of K neighbours")
+    #plt.title("Accuracy vs number of K neighbours")
     plt.savefig('plots\KNN_accuracy_v_K.png')
 
 
