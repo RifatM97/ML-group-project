@@ -88,7 +88,7 @@ def partition(x, y, train_portion=None):
     Outputs - The data split in 2 different parts
     """
     # Divide datasets
-    random.seed(40)  # same seed for consistent workflow
+    np.random.seed(40)  # same seed for consistent workflow
 
     # Decide training portion
     if train_portion is None:
@@ -104,7 +104,7 @@ def partition(x, y, train_portion=None):
 
     ### randomise the data set
     idx = [i for i in range(len(x))]
-    random.shuffle(idx)
+    np.random.shuffle(idx)
 
     train_idx, test_idx = np.split(idx, [int(train_portion * len(x))])
 
