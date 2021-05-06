@@ -9,7 +9,7 @@ from sklearn.discriminant_analysis import LinearDiscriminantAnalysis
 
 # Random Forest Classifier - class membership prediction
 def randomForest(x_train, y_train, x_test, n_estimators):
-    random_forest = RandomForestClassifier(n_estimators=n_estimators, max_depth=3)
+    random_forest = RandomForestClassifier(n_estimators=n_estimators, max_depth=10, max_samples=0.3)
     random_forest.fit(x_train, y_train)
     return random_forest.predict(x_test)
 
@@ -17,7 +17,7 @@ def randomForest(x_train, y_train, x_test, n_estimators):
 def randomForest_prob(x_train, y_train, test, n_estimators):
         
     # classifier
-    random_forest = RandomForestClassifier(n_estimators=n_estimators, max_depth=3)
+    random_forest = RandomForestClassifier(n_estimators=n_estimators, max_depth=10, max_samples=0.3)
     
     # training model
     random_forest.fit(x_train, y_train)
