@@ -48,20 +48,27 @@ To be able to run this project a working python environment is required. It is r
 
 Four machine learning models were used in this project. 
 
-* Logistic Regression: TO DO
+* Logistic Regression: TODO
 `python main.py data\train.csv logistic` 
+
 (Running time: 30 seconds)
 
-* Linear Discriminant Analysis: TO DO
+* Linear Discriminant Analysis: Projects the data down to one dimension and separates the projected data into classes. Function written in methods.py
+
 `python main.py data\train.csv fisher`
+
 (Running time: 10 seconds)
 
 * K-Nearest Neighbours: Uses the SciKit Learn API to implement the training classifier. 
+
 `python main.py data\train.csv knn` 
+
 (Running time: 3 seconds)
 
 * Random Forest Classifier: Uses the SciKit Learn API to implement the training classifier. 
+
 `python main.py data\train.csv forest` 
+
 (Running time: 5 seconds)
 
 
