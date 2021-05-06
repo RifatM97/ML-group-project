@@ -49,6 +49,7 @@ To be able to run this project a working python environment is required. It is r
 Four machine learning models were used in this project. 
 
 * Logistic Regression: TODO
+
 `python main.py data\train.csv logistic` 
 
 (Running time: 30 seconds)
