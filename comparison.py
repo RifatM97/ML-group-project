@@ -37,7 +37,9 @@ def metric_v_sample(x,y):
     """Function plots the accuracy and expected loss against the sample size of different models. 
     The inputs is the data. 
     The output is the plots"""
+    #Determine the size for each training sample
     size = np.arange(0.11,0.9,0.1)
+    #Create empty lists to fill with accuracy and expected loss separately
     KNN_accuracy_score = []
     KNN_loss = []
     forest_accuracy_score = []
@@ -47,27 +49,37 @@ def metric_v_sample(x,y):
     fisher_accuracy_score = []
     fisher_loss = []
     for i in size:
+        #For each training sample size, split the full data into test and train data
         X_train, Y_train, X_test, Y_test=prep.partition(x,y,train_portion=i)
      
+        #Run the KNN model
         KNN_predict = methods.KNN_predict(X_train, Y_train, X_test, 20)
+        #For each training sample size, fill the relevant list with the accuracy or expected loss
         KNN_accuracy_score.append(eval.accuracy(KNN_predict,Y_test))
         KNN_loss.append(eval.expected_loss(Y_test, KNN_predict, eval.confusion_matrix(KNN_predict, Y_test)))
 
+        #Run the Random Forest model
         forest_predict = methods.randomForest(X_train, Y_train, X_test,100)
+        #For each training sample size, fill the relevant list with the accuracy or expected loss
         forest_accuracy_score.append(eval.accuracy(forest_predict,Y_test))
         forest_loss.append(eval.expected_loss(Y_test, forest_predict, eval.confusion_matrix(forest_predict, Y_test)))
 
+        #Run the Logistic Regression model
         logistic = methods.LogisticRegression()
+        #For each training sample size, fill the relevant list with the accuracy or expected loss
         logistic_predict = logistic.weighting(X_train, Y_train, X_test)
         logistic_accuracy_score.append(eval.accuracy(logistic_predict,Y_test))
         logistic_loss.append(eval.expected_loss(Y_test, logistic_predict, eval.confusion_matrix(logistic_predict, Y_test)))
 
+        #Run the Fishers LDA model
         fisher_predict = methods.fishers_LDA(X_train, Y_train, X_test)
+        #For each training sample size, fill the relevant list with the accuracy or expected loss
         fisher_accuracy_score.append(eval.accuracy(fisher_predict,Y_test))
         fisher_loss.append(eval.expected_loss(Y_test, fisher_predict, eval.confusion_matrix(fisher_predict, Y_test)))
 
     #Plot accuracy vs training sample
     plt.figure()
+    #Plot the results for each model separately
     plt.plot(size, KNN_accuracy_score, label="KNN")
     plt.plot(size, forest_accuracy_score, label="Random Forest")
     plt.plot(size, logistic_accuracy_score, label="Logistic")
@@ -96,23 +108,36 @@ def accuracy_v_fold(x):
     """Function takes a chosen model to plot an accuracy vs number of folds plot. The accuracies are
     the average values for the all the accuracies from each fold."""
 
+    #Create empty lists to fill for each model
     logistic_cross_vals = []
     knn_cross_vals = []
     forest_cross_vals = []
     fisher_cross_vals = []
+    #Specify how many folds to explore
     folds = np.arange(2, 10, 2)
     for i in folds:
+        #For each number of folds run each of the models and
+        #Record the mean accuracy for each number of folds
+
+        #KNN model
         knn_cv_val = eval.kfoldCV(x, f=i, k=20, model="knn")
         knn_cross_vals.append(mean(knn_cv_val))   
+        
+        #Random Forest model
         forest_cv_val = eval.kfoldCV(x, f=i, n_estimators=100, model="forest")
         forest_cross_vals.append(mean(forest_cv_val))
+        
+        #Logistic Regression model
         logistic_cv_val = eval.kfoldCV(x, f=i, model="logistic")
         logistic_cross_vals.append(mean(logistic_cv_val))
+        
+        #Fishers LDA model
         fisher_cv_val = eval.kfoldCV(x, f=i, model="fisher")
         fisher_cross_vals.append(mean(fisher_cv_val))
             
-    # plotting routine
+    # Plotting the mean accuracy against the number of folds
     plt.figure()
+    # Plot for each model separately
     plt.plot(folds, knn_cross_vals, label="KNN")
     plt.plot(folds, forest_cross_vals, label="Random Forest")
     plt.plot(folds, logistic_cross_vals, label="Logistic Regression")
