@@ -21,13 +21,13 @@ def plot_cm_comparison(forest_prediction, knn_prediction, fisher_prediction, log
     """This function plots a confusion matrix for all four models"""
     fig, axs = plt.subplots(2, 2)
     #fig.suptitle('Confusion matrices')
-    sns.heatmap(eval.confusion_matrix(forest_prediction, Y_test), annot=True, ax=axs[0, 0], xticklabels=False)
+    sns.heatmap(eval.confusion_matrix(forest_prediction, Y_test), annot=True, ax=axs[0, 0], xticklabels=False, vmax=110)
     axs[0, 0].set_title('Random Forest')
-    sns.heatmap(eval.confusion_matrix(knn_prediction, Y_test), annot=True, ax=axs[0, 1], xticklabels=False)
+    sns.heatmap(eval.confusion_matrix(knn_prediction, Y_test), annot=True, ax=axs[0, 1], yticklabels=False, vmax=110)
     axs[0, 1].set_title('KNN')
-    sns.heatmap(eval.confusion_matrix(fisher_prediction, Y_test), annot=True, ax=axs[1, 0])
+    sns.heatmap(eval.confusion_matrix(fisher_prediction, Y_test), annot=True, ax=axs[1, 0], vmax=110)
     axs[1, 0].set_title('Fishers LDA')
-    sns.heatmap(eval.confusion_matrix(logistic_prediction, Y_test), annot=True, ax=axs[1, 1], yticklabels=False)
+    sns.heatmap(eval.confusion_matrix(logistic_prediction, Y_test), annot=True, ax=axs[1, 1], yticklabels=False, vmax=110)
     axs[1, 1].set_title('Logistic Regression')
     plt.savefig('plots\confusion_matrices.png')
 
@@ -49,7 +49,7 @@ def metric_v_sample(x,y):
     for i in size:
         X_train, Y_train, X_test, Y_test=prep.partition(x,y,train_portion=i)
      
-        KNN_predict = methods.KNN_predict(X_train, Y_train, X_test, 30)
+        KNN_predict = methods.KNN_predict(X_train, Y_train, X_test, 20)
         KNN_accuracy_score.append(eval.accuracy(KNN_predict,Y_test))
         KNN_loss.append(eval.expected_loss(Y_test, KNN_predict, eval.confusion_matrix(KNN_predict, Y_test)))
 
@@ -102,7 +102,7 @@ def accuracy_v_fold(x):
     fisher_cross_vals = []
     folds = np.arange(2, 10, 2)
     for i in folds:
-        knn_cv_val = eval.kfoldCV(x, f=i, k=30, model="knn")
+        knn_cv_val = eval.kfoldCV(x, f=i, k=20, model="knn")
         knn_cross_vals.append(mean(knn_cv_val))   
         forest_cv_val = eval.kfoldCV(x, f=i, n_estimators=100, model="forest")
         forest_cross_vals.append(mean(forest_cv_val))

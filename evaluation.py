@@ -157,7 +157,7 @@ def cross_validation_split(dataset, folds):
         
     return dataset_split 
     
-def kfoldCV(dataset, f=5, k=30, n_estimators=100, model="knn", print_result=False):
+def kfoldCV(dataset, f=5, k=20, n_estimators=100, model="knn", print_result=False):
     """Function runs chosen model into each fold and tests the model on different 
     sections. Inputs is the chosen dataset, number of folds, model name and model parameters.
     The output is an array of accuracy values for each fold."""
@@ -190,7 +190,7 @@ def kfoldCV(dataset, f=5, k=30, n_estimators=100, model="knn", print_result=Fals
         result.append(acc/len(test))
     if print_result == True:
         #print("Result from each K fold CV:", result)
-        print("------K fold CV------")
+        print("--K fold CV--")
         print("Mean accuracy:", round(stats.mean(result), 4))
         print("Standard deviation:", round(stats.stdev(result), 4))
     return result

@@ -6,9 +6,9 @@ import seaborn as sns
 import preprocessing as prep
 
 # Data Loading 
-train = pd.read_csv(r"C:\Users\user\ML-group-project.git\ML-group-project\data\train.csv")
+train = pd.read_csv(r"data\train.csv")
 print(train) # training data
-test = pd.read_csv(r"C:\Users\user\ML-group-project.git\ML-group-project\data\test.csv")
+test = pd.read_csv(r"data\train.csv")
 print(test) # testing data
 
 # Concatenating to full data
@@ -17,9 +17,9 @@ def inspection():
     titanic = pd.concat(df)
     print(titanic.info())
 
-    ### Not using the testing set as it does not contain survival column
-    ### For supervised models we need to train models on survival column
-    ### Only training set will be explored
+    # Not using the testing set as it does not contain survival column
+    # For supervised models we need to train models on survival column
+    # Only training set will be explored
 
     # Data types
     for column in train.columns.values:
@@ -30,7 +30,7 @@ def inspection():
         count_nan = train[column].isna().sum()
         print (column, "total missing: ", count_nan)
 
-    ### Cabin data is full of gaps, Age needs to be filled.
+    # Cabin data is full of gaps, Age needs to be filled.
 
     # Inspecting numerical data
     print(train.describe())
@@ -46,29 +46,32 @@ def inspection():
 def visual():
     """Visualizing data"""
 
+    # plotting a scatter plot of all the features against each other
     sns.pairplot(train[["Age","SibSp","Parch","Fare","Pclass","Survived"]])
+    plt.savefig('exploratory_plots\scatterplots.png')
+
+    # plotting correlation heatmap
     plt.figure(figsize=(10,8))
     sns.heatmap(train.corr(), annot=True)
+    plt.savefig('exploratory_plots\heatmap.png')
 
+    # plotting a 
     list = ["Age","SibSp","Parch","Fare","Pclass","Sex"]
     for i in list:
         age_dist = sns.FacetGrid(train, col='Survived')
         age_dist.map(plt.hist, i, bins=20)
+        plt.savefig('exploratory_plots\Bar_chart1{}.png'.format(i))
 
+    # plotting a
     list = ["Age","SibSp","Parch","Fare","Pclass","Sex"]
     for i in list:
         plt.figure(figsize=(10,8))
         sns.countplot(x = i, data = train, hue = "Survived")
+        plt.savefig('exploratory_plots\Bar_chart2{}.png'.format(i))
     
-    # visulising relationship between features after prepocessing
 
-    # alldata = prep(train)
-    # plt.figure(figsize=(10,8))
-    # sns.heatmap(alldata.corr(), annot=True)
-
-    plt.show()
-
-# printing the function above
+# printing the functions above
+# All the exploratory plots are saved in the exploratory_plots folder
 
 inspection()
 visual()

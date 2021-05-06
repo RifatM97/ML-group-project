@@ -36,11 +36,10 @@ def main(ifname, knn=False, forest=False, logistic=False, fisher=False, model_co
     # set cmd panda view and import data
     pd.set_option('display.max_columns', None)
     alldata = prep.import2df(ifname)
-    #alldata = prep.import2df(r'C:\Users\user\ML-group-project.git\ML-group-project\data\train.csv')
 
     # fill in missing data and convert categories to one hot
     alldata, alldata_discrete = preprocessing(alldata)
-
+    
     #Produce some exploratory plots of the data
     explore(alldata_discrete)
 
@@ -54,7 +53,7 @@ def main(ifname, knn=False, forest=False, logistic=False, fisher=False, model_co
         eval.accuracy_v_param(X_train,Y_train,X_test,Y_test)
         # Running the KNN model
         knn_start_time = time.time()
-        knn_prediction = methods.KNN_predict(X_train, Y_train, X_test, 30)
+        knn_prediction = methods.KNN_predict(X_train, Y_train, X_test, 20)
         knn_runtime = time.time() - knn_start_time
         print("------Results for KNN--------")
         comp.model_performance(knn_prediction, Y_test, knn_runtime)
@@ -92,15 +91,14 @@ def main(ifname, knn=False, forest=False, logistic=False, fisher=False, model_co
     if model_comparison == True:
         #Assess Accuracy and Expected loss against sample
         #Takes 2 minutes to run
-        comp.metric_v_sample(x,y)
+        #comp.metric_v_sample(x,y)
         
-        # # Confusion matrices
+        # Confusion matrices
         comp.plot_cm_comparison(forest_prediction, knn_prediction, fisher_prediction, logistic_prediction, Y_test)
 
-        # # K-Fold mean accuracy vs number of folds
+        # K-Fold mean accuracy vs number of folds
         #This takes approximately 8 minutes 
-        comp.accuracy_v_fold(alldata)
-
+        #comp.accuracy_v_fold(alldata)
 
 if __name__ == "__main__":
     import sys
