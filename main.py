@@ -48,6 +48,9 @@ def main(ifname, knn=False, forest=False, logistic=False, fisher=False, model_co
     y = alldata["Survived"]
     X_train, Y_train, X_test, Y_test = prep.partition(x, y)
     
+    #K-fold Cross-validation is carried out for each model. Specify number of folds to explore here
+    n_folds = 3
+    
     #KNN model
     if knn == True:
         # Checking KNN vs number of K-neighbors to identify optimum K 
@@ -61,7 +64,7 @@ def main(ifname, knn=False, forest=False, logistic=False, fisher=False, model_co
         knn_runtime = time.time() - knn_start_time
         print("------Results for KNN--------")
         comp.model_performance(knn_prediction, Y_test, knn_runtime)
-        cv_val = eval.kfoldCV(alldata, f=3, model="knn", print_result=True)
+        cv_val = eval.kfoldCV(alldata, f=n_folds, model="knn", print_result=True)
 
     #Random Forest model
     if forest == True:
@@ -74,7 +77,7 @@ def main(ifname, knn=False, forest=False, logistic=False, fisher=False, model_co
         forest_runtime = time.time() - forest_start_time
         print("------Results for Random Forest--------")
         comp.model_performance(forest_prediction, Y_test, forest_runtime)
-        cv_val = eval.kfoldCV(alldata, f=3, model="forest", print_result=True) 
+        cv_val = eval.kfoldCV(alldata, f=n_folds, model="forest", print_result=True) 
     
     if logistic == True:
         # Monitor the time taken to run the model 
@@ -85,7 +88,7 @@ def main(ifname, knn=False, forest=False, logistic=False, fisher=False, model_co
         logistic_runtime = time.time() - logistic_start_time
         print("------Results for Logistic Regression--------")
         comp.model_performance(logistic_prediction, Y_test, logistic_runtime)
-        cv_val = eval.kfoldCV(alldata, f=3, model="logistic", print_result=True) 
+        cv_val = eval.kfoldCV(alldata, f=n_folds, model="logistic", print_result=True) 
 
 
     #Fishers LDA model
@@ -97,7 +100,7 @@ def main(ifname, knn=False, forest=False, logistic=False, fisher=False, model_co
         fisher_runtime = time.time() - fisher_start_time
         print("------Results for Fisher LDA--------")
         comp.model_performance(fisher_prediction, Y_test, fisher_runtime)
-        cv_val = eval.kfoldCV(alldata, f=3, model="fisher", print_result=True)
+        cv_val = eval.kfoldCV(alldata, f=n_folds, model="fisher", print_result=True)
 
     if model_comparison == True:
         #Assess Accuracy and Expected loss against sample
