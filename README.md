@@ -77,5 +77,4 @@ Four machine learning models were used in this project.
 Foundations of Machine Learning (INST0060) - Group Project
 
 ## References:
-[1] WangDangao (2020), fisher linear classifier [python], URL: https://www.kaggle.com/wangdangao/fisher-linear-classifier
-[2] Ang Peng Seng (2018), Basic Classification methods for Titanic [python], URL: https://www.kaggle.com/angps95/basic-classification-methods-for-titanic 
+[1] Ang Peng Seng (2018), Basic Classification methods for Titanic [python], URL: https://www.kaggle.com/angps95/basic-classification-methods-for-titanic 
