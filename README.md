@@ -78,4 +78,5 @@ Foundations of Machine Learning (INST0060) - Group Project
 
 ## References:
 [1] Ang Peng Seng (2018), Basic Classification methods for Titanic [python], URL: https://www.kaggle.com/angps95/basic-classification-methods-for-titanic 
+
 [2] Donges, N (2018), Predicting the Survival of Titanic Passengers [python], URL: https://towardsdatascience.com/predicting-the-survival-of-titanic-passengers-30870ccc7e8
