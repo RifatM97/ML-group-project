@@ -5,7 +5,7 @@
 This project uses the passenger data from the Titanic to correctly predict the passengers who died or survived as a result of the sinking ship. The project uses a range of different supervised machine learning models to attempt at an accurate result. Different metrics are used to evaluate the results from each model in order to investigate the advantages and limitations of different classification models
 
 ## Abstract
-(Paste abstract from report once written)
+On April 15, 1912, the Titanic, a British passenger liner sunk in the Atlantic ocean resulting in the death of over half of the passengers. Data from the voyage containing information about whether the passengers survived or not was accessed. The data contains a number of additional variables including the passengers’ age, sex and ticket class. Using supervised machine learning algorithms which train on this data, the survival of passengers based on these variables can be computed.This study compares the performance of four classification models to determine the optimum algorithm for predicting survivability. The selected models were Logistic Regression, Fisher’s Linear Discriminant Analysis, K-Nearest Neighbours and Random Forest Classifier. Performance metrics, such as, the accuracy of the predictions and the time-taken to run each model were used to compare the algorithms. Whilst limitations prevented certain metrics from being examined, experiments indicated a reasonable performance from all four models with varying areas of success for each. Therefore, the requirements of a given task are best suited for determining the optimum model.
 
 ## Software Implementation
 
@@ -78,3 +78,5 @@ Foundations of Machine Learning (INST0060) - Group Project
 
 ## References:
 [1] Ang Peng Seng (2018), Basic Classification methods for Titanic [python], URL: https://www.kaggle.com/angps95/basic-classification-methods-for-titanic 
+
+[2] Donges, N (2018), Predicting the Survival of Titanic Passengers [python], URL: https://towardsdatascience.com/predicting-the-survival-of-titanic-passengers-30870ccc7e8

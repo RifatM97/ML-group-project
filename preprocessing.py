@@ -21,12 +21,16 @@ def convert2onehot(df, *args):
         df = df.join(onehot)
     return df
 
-#TODO Need to include link to this function in reference
+
 def prep_fill_na_age(df, df_med):
-    """Replace missing age values with the median of the PClass and SibSP"""
+    """Replace missing age values with the median of the PClass and SibSP
+        Note: this function was adapted from an idea posted online. Please see README file for reference [1]."""
     for x in range(len(df)):
+        #For each class...
         if df["Pclass"][x]==1:
+            #For each number of siblings
             if df["SibSp"][x]==0:
+                #Obtain the median age
                 return df_med.loc[1,0]["Age"]
             elif df["SibSp"][x]==1:
                 return df_med.loc[1,1]["Age"]
@@ -62,7 +66,9 @@ def prep_fill_na_age(df, df_med):
 def fill_na_age(df):
     """Set up and call function to replace missing age values 
         with the median of the PClass and SibSP """
+    #Group the data by class and number of siblings
     df_med=df.groupby(["Pclass","SibSp"]).median()
+    #Fill missing age values with the median of the class and number of siblings
     df["Age"]=df["Age"].fillna(prep_fill_na_age(df, df_med))
 
 def fillembarked3(df):
@@ -71,8 +77,10 @@ def fillembarked3(df):
 
 
 def extractTitles(df):
-    """EXTRACT title column with Mr,Mrs,Miss,Master or rare"""
+    """EXTRACT title column with Mr,Mrs,Miss,Master or rare
+        Note: this function was adapted from an idea posted online. Please see README file for reference [2]"""
     df['Title'] = df.Name.str.extract(' ([A-Za-z]+)\.', expand=False)
+    #Collapse less frequent titles into larger groups for easier comparison
     df['Title'] = df['Title'].replace(
         ['Capt', 'Col', 'Countess', 'Lady', 'Don', 'Dona', 'Dr', 'Major', 'Jonkheer', 'Rev', 'Sir'], 'Rare')
     df['Title'] = df['Title'].replace('Mlle', 'Miss')
@@ -106,8 +114,10 @@ def partition(x, y, train_portion=None):
     idx = [i for i in range(len(x))]
     np.random.shuffle(idx)
 
+    #Split the row numbers into train and test set
     train_idx, test_idx = np.split(idx, [int(train_portion * len(x))])
 
+    #Subset the data according to the train and test split of the row numbers
     X_train = x[train_idx]
     Y_train = y[train_idx]
 
