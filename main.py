@@ -96,16 +96,15 @@ def main(ifname, knn=False, forest=False, logistic=False, fisher=False, model_co
         cv_val = eval.kfoldCV(alldata, f=3, model="fisher", print_result=True)
 
     if model_comparison == True:
+
         #Assess Accuracy and Expected loss against sample
-        #Takes 2 minutes to run
-        #comp.metric_v_sample(x,y)
+        comp.metric_v_sample(x,y)
         
         # Plot confusion matrix for each model
         comp.plot_cm_comparison(forest_prediction, knn_prediction, fisher_prediction, logistic_prediction, Y_test)
 
-        # K-Fold mean accuracy vs number of folds
-        #This takes approximately 8 minutes 
-        #comp.accuracy_v_fold(alldata)
+        # K-Fold mean accuracy vs number of folds 
+        comp.accuracy_v_fold(alldata)
 
 if __name__ == "__main__":
     import sys
