@@ -33,7 +33,7 @@ def plot_cm_comparison(forest_prediction, knn_prediction, fisher_prediction, log
 
     
 # Accuracy vs Training sample size
-def metric_v_sample(x,y):
+def metric_v_sample(x,y, k, n_est):
     """Function plots the accuracy and expected loss against the sample size of different models. 
     The inputs is the data. 
     The output is the plots"""
@@ -53,13 +53,13 @@ def metric_v_sample(x,y):
         X_train, Y_train, X_test, Y_test=prep.partition(x,y,train_portion=i)
      
         #Run the KNN model
-        KNN_predict = methods.KNN_predict(X_train, Y_train, X_test, 20)
+        KNN_predict = methods.KNN_predict(X_train, Y_train, X_test, k)
         #For each training sample size, fill the relevant list with the accuracy or expected loss
         KNN_accuracy_score.append(eval.accuracy(KNN_predict,Y_test))
         KNN_loss.append(eval.expected_loss(Y_test, KNN_predict, eval.confusion_matrix(KNN_predict, Y_test)))
 
         #Run the Random Forest model
-        forest_predict = methods.randomForest(X_train, Y_train, X_test,100)
+        forest_predict = methods.randomForest(X_train, Y_train, X_test,n_est)
         #For each training sample size, fill the relevant list with the accuracy or expected loss
         forest_accuracy_score.append(eval.accuracy(forest_predict,Y_test))
         forest_loss.append(eval.expected_loss(Y_test, forest_predict, eval.confusion_matrix(forest_predict, Y_test)))
@@ -104,7 +104,7 @@ def metric_v_sample(x,y):
 
 
 # Accuracy vs Folds
-def accuracy_v_fold(x):
+def accuracy_v_fold(x, k, n_est):
     """Function takes a chosen model to plot an accuracy vs number of folds plot. The accuracies are
     the average values for the all the accuracies from each fold."""
 
@@ -120,11 +120,11 @@ def accuracy_v_fold(x):
         #Record the mean accuracy for each number of folds
 
         #KNN model
-        knn_cv_val = eval.kfoldCV(x, f=i, k=20, model="knn")
+        knn_cv_val = eval.kfoldCV(x, f=i, k=k, model="knn")
         knn_cross_vals.append(mean(knn_cv_val))   
         
         #Random Forest model
-        forest_cv_val = eval.kfoldCV(x, f=i, n_estimators=100, model="forest")
+        forest_cv_val = eval.kfoldCV(x, f=i, n_estimators=n_est, model="forest")
         forest_cross_vals.append(mean(forest_cv_val))
         
         #Logistic Regression model
