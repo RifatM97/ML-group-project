@@ -1,5 +1,4 @@
 # ML group project: The Survival of The Titanic
-by Rifat Mahammod, Abid Razavi, Robert Shaw and Rajni Sandhu
 
 ## Introduction 
 
@@ -77,6 +76,6 @@ Four machine learning models were used in this project.
 
 Foundations of Machine Learning (INST0060) - Group Project
 
-Contributors: 
-
-Rifat Mahammod, Abid Razavi, Robert Shaw and Rajni Sandhu
+## References:
+[1] WangDangao (2020), fisher linear classifier [python], URL: https://www.kaggle.com/wangdangao/fisher-linear-classifier
+[2] Ang Peng Seng (2018), Basic Classification methods for Titanic [python], URL: https://www.kaggle.com/angps95/basic-classification-methods-for-titanic 
