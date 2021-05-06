@@ -54,8 +54,10 @@ def main(ifname, knn=False, forest=False, logistic=False, fisher=False, model_co
         eval.accuracy_v_param(X_train,Y_train,X_test,Y_test)
         # Monitor the time taken to run the model 
         knn_start_time = time.time()
+        # Choose k
+        k = 20
         # Running the KNN model
-        knn_prediction = methods.KNN_predict(X_train, Y_train, X_test, 20)
+        knn_prediction = methods.KNN_predict(X_train, Y_train, X_test, k)
         knn_runtime = time.time() - knn_start_time
         print("------Results for KNN--------")
         comp.model_performance(knn_prediction, Y_test, knn_runtime)
@@ -65,8 +67,10 @@ def main(ifname, knn=False, forest=False, logistic=False, fisher=False, model_co
     if forest == True:
         # Monitor the time taken to run the model 
         forest_start_time = time.time()
+        #Specify number of estimators for running this method
+        n_est = 100
         # Run random forest model with 100 n_estimators
-        forest_prediction = methods.randomForest(X_train, Y_train, X_test, n_estimators=100)
+        forest_prediction = methods.randomForest(X_train, Y_train, X_test, n_estimators=n_est)
         forest_runtime = time.time() - forest_start_time
         print("------Results for Random Forest--------")
         comp.model_performance(forest_prediction, Y_test, forest_runtime)
@@ -98,14 +102,14 @@ def main(ifname, knn=False, forest=False, logistic=False, fisher=False, model_co
     if model_comparison == True:
         #Assess Accuracy and Expected loss against sample
         #Takes 2 minutes to run
-        #comp.metric_v_sample(x,y)
+        #comp.metric_v_sample(x,y, k, n_est)
         
         # Plot confusion matrix for each model
         comp.plot_cm_comparison(forest_prediction, knn_prediction, fisher_prediction, logistic_prediction, Y_test)
 
         # K-Fold mean accuracy vs number of folds
         #This takes approximately 8 minutes 
-        #comp.accuracy_v_fold(alldata)
+        #comp.accuracy_v_fold(alldata, k, n_est)
 
 if __name__ == "__main__":
     import sys
