@@ -5,7 +5,7 @@
 This project uses the passenger data from the Titanic to correctly predict the passengers who died or survived as a result of the sinking ship. The project uses a range of different supervised machine learning models to attempt at an accurate result. Different metrics are used to evaluate the results from each model in order to investigate the advantages and limitations of different classification models
 
 ## Abstract
-(Paste abstract from report once written)
+Data from the voyage and eventual shipwreck of the Titanic containing information about the survival of passengers, as well as, their age, sex and ticket class was accessed. Using supervised machine learning algorithms which train on this data, the survival of passengers based on these variables can be computed. This study compares the performance of four classification models to determine the optimum algorithm for predicting survivability. The selected models were Logistic Regression, Fisher’s Linear Discriminant Analysis, K-Nearest Neighbours and Random Forest Classifier. Performance metrics, such as, the accuracy of the predictions and the time-taken to run each model were used to compare the algorithms. Whilst limitations prevented certain metrics from being examined, experiments indicated a reasonable performance from all four models with varying attributes of each. Therefore, the requirements of a given task are best suited for determining the optimum model.
 
 ## Software Implementation
 
