@@ -27,19 +27,6 @@ The structure of the code involves six main files of the project as described be
 (6) main.py: In this file, all the previous function are imported and compiled together to obtain the model predictions, accuracies and results from cross evaluation metrics.
 
 
-
-### Machine Learning Models
-
-Four machine learning models were used in this project. 
-
-* Logistic Regression: TO DO
-
-* Linear Discriminant Analysis: TO DO
-
-* K-Nearest Neighbours: Uses the SciKit Learn API to implement the training classifier. 
-
-* Random Forest Classifier: Uses the SciKit Learn API to implement the training classifier. 
-
 ### Code
 
 The dataset was downloaded from https://www.kaggle.com/c/titanic. You can download a copy of all the files in this repository by cloning the git repository:
@@ -51,10 +38,32 @@ git clone https://github.com/RifatM97/ML-group-project.git
 To be able to run this project a working python environment is required. It is recommended to set up an environment through the Anaconda terminal using the conda packages. To run the code in full follow the steps below:
 
 * Install required modules using modules using Pip:`pip install -r requirements.txt`
-  
-* To run all results and comparisons:`python main.py data\train.csv`
 
-* To run the results for a specific model, state it as the third argument e.g.: `python main.py data\train.csv knn` `python main.py data\train.csv forest` `python main.py data\train.csv logistic` `python main.py data\train.csv fisher`   
+* To run all results and comparisons:`python main.py data\train.csv`
+    (Running time: approximately 12 minutes)
+
+* To run the results for a specific model, state it as the third argument (see below).  
+
+### Machine Learning Models
+
+Four machine learning models were used in this project. 
+
+* Logistic Regression: TO DO
+`python main.py data\train.csv logistic` 
+(Running time: 30 seconds)
+
+* Linear Discriminant Analysis: TO DO
+`python main.py data\train.csv fisher`
+(Running time: 10 seconds)
+
+* K-Nearest Neighbours: Uses the SciKit Learn API to implement the training classifier. 
+`python main.py data\train.csv knn` 
+(Running time: 3 seconds)
+
+* Random Forest Classifier: Uses the SciKit Learn API to implement the training classifier. 
+`python main.py data\train.csv forest` 
+(Running time: 5 seconds)
+
 
 ## Authors
 
