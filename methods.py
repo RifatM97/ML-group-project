@@ -174,8 +174,16 @@ def project_data(data, weights):
     return projected_data
 
 # Creating a classifier for Logistic Regression
-# This method uses stochastic gradient descent
 class LogisticRegression():
+    """This method uses stochastic gradient descent and sigmoid function
+    
+        -------
+        weighting(X)
+            Fits the weights on the training data pairs X, y
+
+        predict_prob(X)
+            Predicts probabilities for class membership 
+        """
     
     # Constructor used to initialize the objects in the class
     # Where itr = number of iterations for convergance

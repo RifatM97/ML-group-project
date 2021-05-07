@@ -105,13 +105,13 @@ def main(ifname, knn=False, forest=False, logistic=False, fisher=False, model_co
     if model_comparison == True:
 
         #Assess Accuracy and Expected loss against sample
-        comp.metric_v_sample(x,y)
+        comp.metric_v_sample(x,y,k, n_est)
         
         # Plot confusion matrix for each model
         comp.plot_cm_comparison(forest_prediction, knn_prediction, fisher_prediction, logistic_prediction, Y_test)
 
         # K-Fold mean accuracy vs number of folds 
-        comp.accuracy_v_fold(alldata)
+        comp.accuracy_v_fold(alldata, k, n_est)
 
 if __name__ == "__main__":
     import sys

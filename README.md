@@ -80,3 +80,6 @@ Foundations of Machine Learning (INST0060) - Group Project
 [1] Ang Peng Seng (2018), Basic Classification methods for Titanic [python], URL: https://www.kaggle.com/angps95/basic-classification-methods-for-titanic 
 
 [2] Donges, N (2018), Predicting the Survival of Titanic Passengers [python], URL: https://towardsdatascience.com/predicting-the-survival-of-titanic-passengers-30870ccc7e8
+
+[3] Burhan Y. Kiyakoglu (2020), k-NN, Logistic Regression and k-Fold Cross Validation from Scratch [python], URL: https://www.kaggle.com/burhanykiyakoglu/k-nn-logistic-regression-k-fold-cv-from-scratch#-Logistic-Regression-from-Neural-Network-Perspective 
+
