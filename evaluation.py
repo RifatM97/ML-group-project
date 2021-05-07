@@ -95,28 +95,7 @@ def expected_loss(targets, predicts, lossmtx):
     error = (class0loss + class1loss)/N
     return error
 
-# Cross entropy loss evaluation function (NEEDS TO BE REVIEWED AS IT GIVES NAN ERROR)
-def cross_entropy_error(targets, predict_probs):
-    """
-    Evaluate how closely predicted values match the true
-    values in a cross-entropy sense.
-    ----------
-    targets - The actual survival values
-    predicts - the predictions of the survival
-    lossmtx - confusion matrix
-
-    Returns
-    -------
-    error - The cross-entropy error between true and predicted target
-    """
-    # Flatten both arrays
-    targets = np.array(targets).flatten()
-    predict_probs = np.array(predict_probs[:,1]).flatten()
-    N = len(targets)
-    error = - np.sum(targets*np.log(predict_probs) + (1-targets)*np.log(1-predict_probs))/N
-    return error
-
-
+# Misclassification error function
 def misclassification_error(targets, predicts):
     """Function finds the minimum-misclassification error between true and predicted target. 
     It cant be considered as 1 minus the accuracy. """
@@ -128,7 +107,7 @@ def misclassification_error(targets, predicts):
     error = 1 - np.sum(targets == predicts)/N
     return error
 
-
+# Cross validation split [3]
 def cross_validation_split(dataset, folds):
     """Function splits the data in chosen folds. The output is split data"""
 
@@ -158,7 +137,8 @@ def cross_validation_split(dataset, folds):
         dataset_split.append(np.asarray(fold))
         
     return dataset_split 
-    
+
+# K-fold iteration function [3]    
 def kfoldCV(dataset, f=5, k=20, n_estimators=100, model="knn", print_result=False):
     """Function runs chosen model into each fold and tests the model on different 
     sections. Inputs is the chosen dataset, number of folds, model name and model parameters.
