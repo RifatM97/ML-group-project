@@ -68,6 +68,9 @@ def main(ifname, knn=False, forest=False, logistic=False, fisher=False, model_co
 
     #Random Forest model
     if forest == True:
+        # tune parameters
+        # methods.randomForestParamTune(X_train, Y_train, X_test, Y_test)
+
         # Monitor the time taken to run the model 
         forest_start_time = time.time()
         #Specify number of estimators for running this method
