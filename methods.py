@@ -5,6 +5,7 @@ import pandas as pd
 import matplotlib.pyplot as plt
 import scipy
 import math
+import evaluation as eval
 from sklearn.discriminant_analysis import LinearDiscriminantAnalysis
 
 # Random Forest Classifier - class membership prediction
@@ -27,6 +28,29 @@ def randomForest_prob(x_train, y_train, test, n_estimators):
     
     return prediction
 
+def randomForestParamTune(x_train, y_train, x_test, y_test):
+    """function used for parameter tuning and plotting"""
+    max_depths = [i for i in range(1,100,1)]
+    # max samples = np.linspace(0.1,0.9,100)
+    # n_estimators = [i for i in range(1,500,1)]
+    test_accuracy = [0 for i in range(1,100,1)]
+    train_accuracy = [0 for i in range(1,100,1)]
+    for i in range(len(max_depths)):
+        random_forest = RandomForestClassifier(max_depth=max_depths[i])
+        random_forest.fit(x_train, y_train)
+        test_accuracy[i] = eval.accuracy(random_forest.predict(x_test), y_test)
+        train_accuracy[i] = eval.accuracy(random_forest.predict(x_train), y_train)
+    print (train_accuracy)
+    fig, ax = plt.subplots()
+    ax.plot(max_depths, train_accuracy)
+    ax.plot(max_depths, test_accuracy)
+    ax.set_ylim([0.5,1])
+
+    ax.set(xlabel='max_depth', ylabel='accuracy',
+           title='Max_depth')
+    ax.grid()
+    fig.savefig("plot/tuning.png")
+    
 # KNN Classifier - class membership prediction
 def KNN_predict(x_train, y_train, test, K):
     'This function uses the K-Nearest Neighbours (kNN) classifier. The function trains the model on the training set'
